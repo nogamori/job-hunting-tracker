@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- v1788431756 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracker — Gregório Amorim</title>
+<link rel="icon" type="image/png" href="https://cdn0.iconfinder.com/data/icons/business-aqua-vol-2/500/Opportunities_Searching-512.png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f1;--surface:#fff;--surface-1:#fafaf8;
+  --border:rgba(0,0,0,.09);--border-strong:rgba(0,0,0,.16);
+  --text:#18180f;--text-2:#6b6b62;--text-3:#9e9e96;
+  --accent:#2451d1;--accent-bg:#edf1fd;--accent-text:#1a3ba0;
+  --danger:#c43030;--danger-bg:#fff0f0;
+  --success:#166534;--success-bg:#f0faf4;
+  --warn:#92540a;--warn-bg:#fffbeb;
+  --purple:#6d28d9;--purple-bg:#f5f3ff;
+  --gray-bg:#f1f0ec;
+  --radius:7px;--sh:0 1px 3px rgba(0,0,0,.07),0 0 0 .5px rgba(0,0,0,.06)
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#141410;--surface:#1e1e1a;--surface-1:#252520;
+  --border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.16);
+  --text:#f0efe8;--text-2:#a0a097;--text-3:#6b6b62;
+  --accent:#6b8ff5;--accent-bg:#1a2240;--accent-text:#a8bffa;
+  --danger:#f87171;--danger-bg:#2a1010;--success:#4ade80;--success-bg:#0a2015;
+  --warn:#fbbf24;--warn-bg:#2a1a05;--purple:#c4b5fd;--purple-bg:#2d1a4a;
+  --gray-bg:#2a2a24;--sh:0 1px 3px rgba(0,0,0,.3),0 0 0 .5px rgba(255,255,255,.06)
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;line-height:1.5;background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:1500px;margin:0 auto;padding:1.75rem 1.5rem}
+.nav{display:flex;gap:4px;margin-bottom:1.5rem;border-bottom:.5px solid var(--border)}
+.nav-btn{background:none;border:none;border-bottom:2.5px solid transparent;border-radius:0;color:var(--text-2);cursor:pointer;font-size:13px;font-weight:500;padding:8px 16px;margin-bottom:-1px;transition:color .12s,border-color .12s}
+.nav-btn:hover{background:none;color:var(--text)}.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none!important}.view.active{display:block!important}
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
+.header h1{font-size:19px;font-weight:600;letter-spacing:-.3px}
+.header-sub{font-size:12px;color:var(--text-3);margin-top:2px}
+.hctrls{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.export-info{font-size:11px;color:var(--text-3);padding:4px 8px;background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius)}
+.export-info.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn)}
+input,select,textarea{background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--radius);color:var(--text);font-family:inherit;font-size:12px;padding:5px 9px;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+input[type=text],input[type=url],input[type=date]{width:100%}
+.si{width:190px}
+button{background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--radius);color:var(--text);cursor:pointer;font-family:inherit;font-size:12px;padding:5px 11px;transition:background .12s,opacity .12s;white-space:nowrap}
+button:hover{background:var(--surface-1)}button:active{opacity:.8}
+.bp{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}.bp:hover{opacity:.88;background:var(--accent)}
+.bd{color:var(--danger);border-color:transparent;background:transparent;padding:3px 7px;font-size:11px}.bd:hover{background:var(--danger-bg)}
+.bs{padding:3px 9px;font-size:11px}
+.filters{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:flex-start}
+.fl{font-size:11px;color:var(--text-3);margin-right:2px;padding-top:7px}
+.ms-wrap{position:relative;display:inline-block}
+.ms-trigger{background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--radius);color:var(--text);cursor:pointer;font-size:12px;padding:5px 28px 5px 9px;min-width:120px;text-align:left;position:relative;user-select:none;white-space:nowrap;display:inline-block}
+.ms-trigger::after{content:'▾';position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text-3)}
+.ms-trigger.has-sel{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-text)}
+.ms-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;min-width:190px;padding:4px 0;max-height:260px;overflow-y:auto}
+.ms-dropdown.open{display:block}
+.ms-item{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;font-size:12px}.ms-item:hover{background:var(--accent-bg)}
+.ms-item input[type=checkbox]{width:13px;height:13px;cursor:pointer;flex-shrink:0;accent-color:var(--accent)}
+.ms-item label{cursor:pointer;flex:1}
+.ms-divider{height:.5px;background:var(--border);margin:4px 0}
+.ms-clear{display:block;width:100%;text-align:center;font-size:11px;color:var(--accent);background:none;border:none;padding:5px;cursor:pointer}.ms-clear:hover{background:var(--accent-bg)}
+.sort-rm:hover{color:var(--danger)}
+.stats{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:.5px solid var(--border);border-radius:20px;padding:3px 11px;font-size:11px;color:var(--text-2);box-shadow:var(--sh)}
+.pill strong{color:var(--text);font-weight:600}
+.table-wrap{background:var(--surface);border-radius:11px;border:.5px solid var(--border);box-shadow:var(--sh);overflow:auto}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{background:var(--surface-1);border-bottom:.5px solid var(--border);color:var(--text-2);font-size:10.5px;font-weight:600;letter-spacing:.4px;padding:9px 10px;text-align:left;text-transform:uppercase;position:relative;user-select:none;white-space:nowrap;overflow:hidden}
+th.sortable{cursor:pointer}th.sortable:hover{color:var(--text)}
+.sarr{margin-left:3px;font-size:9px;opacity:.4}.sorted .sarr{color:var(--accent);opacity:1}
+td{border-bottom:.5px solid var(--border);padding:8px 10px;vertical-align:middle;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparent)}
+.resizer{position:absolute;right:0;top:0;width:6px;height:100%;cursor:col-resize;z-index:2;background:transparent;transition:background .15s}
+.resizer:hover,.resizer.dragging{background:var(--accent)}
+.expand-btn{background:none;border:.5px solid var(--border);border-radius:4px;color:var(--text-3);cursor:pointer;font-size:10px;padding:1px 5px;line-height:1.4;transition:all .12s}
+.expand-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.expand-btn.open{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text)}
+.name-cell{display:flex;align-items:center;gap:6px}
+.apps-row{display:none}.apps-row.open{display:table-row}
+.apps-cell{padding:0!important;background:var(--surface-1)!important;border-bottom:.5px solid var(--border)!important}
+.apps-inner{padding:.75rem 1rem .85rem 2.5rem;border-top:.5px solid var(--border)}
+.apps-header{display:flex;align-items:center;gap:12px;margin-bottom:.7rem;flex-wrap:wrap}
+.apps-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.4px}
+.apps-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.apps-table th{background:transparent;font-size:10px;color:var(--text-3);font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:4px 8px;border-bottom:.5px solid var(--border);position:static}
+.apps-table td{padding:6px 8px;border-bottom:.5px solid var(--border);color:var(--text);vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.apps-table tr:last-child td{border-bottom:none}
+.apps-table tr:hover td{background:color-mix(in srgb,var(--accent) 4%,transparent)}
+.app-empty{color:var(--text-3);font-size:11px;padding:.5rem 0;font-style:italic}
+.role-link{background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;text-align:left;text-decoration:underline;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;display:block}
+.role-link:hover{color:var(--accent-text);background:none}
+.status{border-radius:4px;font-size:10px;font-weight:600;padding:2px 6px;display:inline-block;white-space:nowrap}
+.st-applied{background:var(--accent-bg);color:var(--accent-text)}.st-screening{background:var(--warn-bg);color:var(--warn)}
+.st-interview{background:#fff7ed;color:#c2410c}.st-offer{background:var(--success-bg);color:var(--success)}
+.st-rejected{background:var(--danger-bg);color:var(--danger)}.st-withdrawn{background:var(--gray-bg);color:var(--text-2)}
+.st-hold{background:var(--purple-bg);color:var(--purple)}.st-watching{background:var(--gray-bg);color:var(--text-3)}
+@media(prefers-color-scheme:dark){.st-interview{background:#2a1505;color:#fb923c}}
+.tier-badge{border-radius:4px;font-size:10.5px;font-weight:600;padding:2px 6px;display:inline-block}
+.t1{background:var(--success-bg);color:var(--success)}.t2{background:var(--accent-bg);color:var(--accent-text)}
+.t3{background:var(--gray-bg);color:var(--text-2)}.tag{background:var(--warn-bg);color:var(--warn)}.tpl{background:var(--purple-bg);color:var(--purple)}
+.link-a{color:var(--accent);text-decoration:none;font-size:11px}.link-a:hover{text-decoration:underline}
+.pdf-drop{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:.75rem 1rem;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.pdf-drop:hover,.pdf-drop.dragover{border-color:var(--accent);background:var(--accent-bg)}
+.pdf-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.pdf-drop-label{font-size:12px;color:var(--text-2);pointer-events:none}.pdf-drop-label strong{color:var(--accent)}
+.pdf-preview{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius);font-size:12px}
+.pdf-icon{font-size:18px;flex-shrink:0}.pdf-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2)}.pdf-size{font-size:11px;color:var(--text-3);flex-shrink:0}
+.pdf-clear{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:14px;padding:0 4px}.pdf-clear:hover{color:var(--danger)}
+.cv-dl{background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0;text-decoration:underline;white-space:nowrap}.cv-dl:hover{color:var(--accent-text)}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.backdrop.open{display:flex}
+.modal{background:var(--surface);border-radius:11px;border:.5px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.18);width:100%;max-width:540px;max-height:90vh;overflow-y:auto}
+.modal-wide{max-width:680px}
+.mhead{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem .9rem;border-bottom:.5px solid var(--border)}
+.mhead h2{font-size:15px;font-weight:600}
+.mbody{padding:1.1rem 1.4rem}
+.mfoot{display:flex;gap:6px;justify-content:flex-end;padding:.9rem 1.4rem;border-top:.5px solid var(--border)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.ff{display:flex;flex-direction:column;gap:4px}.ff.full{grid-column:1/-1}
+.ff label{font-size:11px;font-weight:500;color:var(--text-2)}.ff textarea{resize:vertical;min-height:65px}
+.cbtn{background:none;border:none;color:var(--text-2);cursor:pointer;font-size:17px;line-height:1;padding:2px 6px;border-radius:4px}.cbtn:hover{background:var(--bg)}
+.tab-bar{display:flex;border-bottom:.5px solid var(--border);margin-bottom:1.1rem}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;border-radius:0;color:var(--text-2);cursor:pointer;font-size:12px;font-weight:500;padding:7px 14px;margin-bottom:-1px;transition:color .12s,border-color .12s}
+.tab-btn:hover{background:none;color:var(--text)}.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.json-paste{width:100%;font-family:monospace;font-size:11.5px;min-height:120px;resize:vertical}
+.json-hint{font-size:11px;color:var(--text-3);margin-top:6px;line-height:1.6}
+.json-hint code{background:var(--gray-bg);border-radius:3px;padding:1px 4px;font-size:10.5px;color:var(--text-2)}
+.json-err{font-size:12px;color:var(--danger);margin-top:8px;display:none;background:var(--danger-bg);border:.5px solid var(--danger);border-radius:var(--radius);padding:.6rem .85rem;line-height:1.7}.json-err.show{display:block}
+.json-err-title{font-weight:600;margin-bottom:4px}
+.json-err-item{margin-left:.5rem}
+.json-err-item code{background:rgba(0,0,0,.08);border-radius:3px;padding:1px 4px;font-size:11px}
+.json-ok{font-size:11px;color:var(--success);margin-top:5px;display:none}.json-ok.show{display:block}
+.notes-btn{background:none;border:.5px solid var(--border);border-radius:4px;color:var(--text-2);cursor:pointer;font-size:11px;padding:2px 8px}
+.notes-btn:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.notes-btn.has-notes{border-color:var(--accent);color:var(--accent-text);background:var(--accent-bg)}
+.notes-content{font-size:13px;line-height:1.7;white-space:pre-wrap;min-height:60px}
+.changelog{margin-top:.85rem;padding-top:.75rem;border-top:.5px solid var(--border)}
+.changelog-title{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:.4rem}
+.cl-item{display:flex;gap:8px;font-size:11px;color:var(--text-2);padding:2px 0}
+.cl-ts{color:var(--text-3);white-space:nowrap;flex-shrink:0}.cl-desc{flex:1}
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--text);color:var(--bg);border-radius:var(--radius);padding:9px 14px;font-size:12px;font-weight:500;opacity:0;transform:translateY(6px);transition:all .18s;z-index:300;pointer-events:none;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text-3)}.empty p{font-size:12px;margin-top:5px}
+.disclaimer{margin-top:1.25rem;padding:.85rem 1.1rem;background:var(--surface);border:.5px solid var(--border);border-radius:10px;font-size:11px;color:var(--text-2);line-height:1.6;box-shadow:var(--sh)}
+.disclaimer strong{color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+
+.notes-feed{display:flex;flex-direction:column;gap:.4rem;max-height:200px;overflow-y:auto;margin-bottom:.5rem}
+.note-item{background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius);padding:.4rem .65rem}
+.note-ts{font-size:10px;color:var(--text-3);margin-bottom:2px}
+.note-body{font-size:12px;color:var(--text);white-space:pre-wrap;line-height:1.5}
+.note-action-btn{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:10px;padding:0 4px}
+.note-action-btn:hover{color:var(--accent)}.note-action-btn.danger:hover{color:var(--danger)}
+.note-add-row{display:flex;gap:6px;align-items:flex-end}
+.note-add-row textarea{flex:1;min-height:52px;resize:vertical;font-size:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="nav">
+  <button class="nav-btn active" onclick="switchView('companies')">Companies</button>
+  <button class="nav-btn" onclick="switchView('applications')">Applications</button>
+  <button class="nav-btn" onclick="switchView('howto')">How to use</button>
+</div>
+
+<!-- COMPANIES VIEW -->
+<div class="view active" id="view-companies">
+<div class="header">
+  <div><h1>Job Tracker</h1><div class="header-sub">Companies &amp; applications &middot; Gregório Amorim &middot; Barcelona &amp; EMEA</div></div>
+  <div class="hctrls">
+    <input class="si" type="text" id="co-search" placeholder="Search companies&hellip;" oninput="renderCos()">
+    <span class="export-info" id="export-info">Never exported</span>
+    <button onclick="exportJSON()">Export</button>
+    <button onclick="document.getElementById('imp').click()">Import</button>
+    <input type="file" id="imp" accept=".json" style="display:none" onchange="importJSON(event)">
+    <button class="bp" onclick="openCo(null)">+ Add company</button>
+  </div>
+</div>
+<div class="filters">
+  <span class="fl">Filter:</span>
+  <div class="ms-wrap" id="ms-tier"></div>
+  <div class="ms-wrap" id="ms-type"></div>
+  <div class="ms-wrap" id="ms-appstatus"></div>
+  <div class="ms-wrap" id="ms-hasapp"></div>
+  <button class="bs" onclick="clearCoFilters()">Clear</button>
+</div>
+<div class="stats" id="co-stats"></div>
+<div class="table-wrap"><table><thead id="co-thead"></thead><tbody id="co-tbody"></tbody></table></div>
+<div class="disclaimer"><strong>Tier classification</strong>Tiers reflect confirmed presence in Barcelona or remote EMEA hiring, historical frequency of commercial role openings, and fit with the candidate profile (B2B SaaS, corporate decision-maker sales cycle, Portuguese or EMEA market). Classification is dynamic. Agencies and platforms are classified by type, not tier. Links verified August 2026.</div>
+</div>
+
+<!-- APPLICATIONS VIEW -->
+<div class="view" id="view-applications">
+<div class="header">
+  <div><h1>Applications</h1><div class="header-sub">All applications across companies</div></div>
+  <div class="hctrls"><input class="si" type="text" id="ap-search" placeholder="Search&hellip;" oninput="renderAppsView()"></div>
+</div>
+<div class="filters">
+  <span class="fl">Filter:</span>
+  <div class="ms-wrap" id="ms-ap-status"></div>
+  <div class="ms-wrap" id="ms-ap-company"></div>
+  <button class="bs" onclick="clearApFilters()">Clear</button>
+</div>
+<div class="stats" id="ap-stats"></div>
+<div class="table-wrap"><table><thead id="ap-thead"></thead><tbody id="ap-tbody"></tbody></table></div>
+</div>
+
+</div>
+
+
+<!-- HOW TO USE VIEW -->
+<div class="view" id="view-howto">
+<div style="max-width:760px;padding:2rem 0">
+  <h1 style="font-size:22px;font-weight:700;margin-bottom:.35rem">Job Tracker</h1>
+  <p style="font-size:13px;color:var(--text-2);margin-bottom:2rem">A free, browser-based job application tracker built with AI.</p>
+
+  <div style="display:flex;flex-direction:column;gap:1.75rem">
+
+    <section>
+      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">About</h2>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">This tool was created using artificial intelligence by <a href="https://github.com/nogamori" target="_blank" rel="noopener" style="color:var(--accent)">nogamori</a>. It is open source, completely free to use, and runs entirely in your browser — no servers, no accounts, no subscriptions.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">Features</h2>
+      <ul style="font-size:13px;line-height:2;color:var(--text-2);list-style:none;padding:0">
+        <li>&#10003;&nbsp; Track companies and job applications in one place</li>
+        <li>&#10003;&nbsp; Store CV files (PDF) alongside each application</li>
+        <li>&#10003;&nbsp; Multi-entry notes with timestamps per application</li>
+        <li>&#10003;&nbsp; Full change log for every application edit</li>
+        <li>&#10003;&nbsp; Import applications via JSON (partial updates supported)</li>
+        <li>&#10003;&nbsp; Filter and sort by tier, type, status, and more</li>
+        <li>&#10003;&nbsp; Export and import all data as a single JSON file</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">How to use</h2>
+      <ol style="font-size:13px;line-height:2;color:var(--text-2);padding-left:1.25rem">
+        <li>Download <code style="background:var(--gray-bg);border-radius:3px;padding:1px 5px">job_tracker.html</code> and open it in your browser.</li>
+        <li>Add companies you want to track using <strong>+ Add company</strong>.</li>
+        <li>When you apply to a role, click <strong>+</strong> next to the company to log the application.</li>
+        <li>Update the application status as the process evolves.</li>
+        <li>Use the <strong>Applications</strong> tab for a full view across all companies.</li>
+        <li>Export your data regularly using the <strong>Export</strong> button.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">Data &amp; Privacy</h2>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">All data is stored locally in your browser using <strong>IndexedDB</strong> — a built-in browser database. Nothing is sent to any server. Your data stays on your machine.</p>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2);margin-top:.65rem"><strong>Important:</strong> data stored in IndexedDB is tied to the browser and device you are using. If you clear your browser data, use a different browser, or switch computers, your data will not be there. To avoid losing your data, export a JSON backup regularly using the <strong>Export</strong> button and keep it alongside the HTML file.</p>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2);margin-top:.65rem">To restore data on a new device or browser: open the HTML file, click <strong>Import</strong>, and select your JSON backup.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">Built with</h2>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">HTML &middot; CSS &middot; Vanilla JavaScript &middot; IndexedDB &middot; <a href="https://claude.ai" target="_blank" rel="noopener" style="color:var(--accent)">Claude AI</a> (Anthropic)</p>
+    </section>
+
+    <section>
+      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">License</h2>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">MIT License — free to use, modify, and distribute.</p>
+    </section>
+
+  </div>
+</div>
+</div>
+
+<!-- COMPANY MODAL -->
+<div class="backdrop" id="co-modal" onclick="bgClose(event,'co-modal')"><div class="modal">
+  <div class="mhead"><h2 id="co-title">Add company</h2><button class="cbtn" onclick="closeModal('co-modal')">&#215;</button></div>
+  <div class="mbody"><div class="fg">
+    <div class="ff full"><label>Company name *</label><input type="text" id="cn" placeholder="e.g. Airwallex"></div>
+    <div class="ff"><label>Tier *</label><select id="ct">
+      <option value="1">1 &mdash; Priority</option><option value="2" selected>2 &mdash; Active watch</option><option value="3">3 &mdash; On radar</option>
+      <option value="Ag&ecirc;ncia BCN">Agency BCN</option><option value="Ag&ecirc;ncia Fintech EMEA">Agency Fintech EMEA</option>
+      <option value="Ag&ecirc;ncia Payments Global">Agency Payments Global</option><option value="Platform Europa">Platform Europa</option>
+      <option value="Platform Europa/PT">Platform Europa/PT</option><option value="Platform Remote Tech">Platform Remote Tech</option>
+      <option value="Platform Startups">Platform Startups</option>
+    </select></div>
+    <div class="ff"><label>Type</label><select id="ctype">
+      <option value="Company" selected>Company</option><option value="Ag&ecirc;ncia">Agency</option><option value="Platform">Platform</option>
+    </select></div>
+    <div class="ff full"><label>Careers page URL</label><input type="url" id="cs" placeholder="https://&hellip;"></div>
+    <div class="ff full"><label>LinkedIn Jobs URL</label><input type="url" id="cl" placeholder="https://linkedin.com/company/&hellip;/jobs/"></div>
+    <div class="ff full"><label>Notes</label><textarea id="cno" placeholder="Context, contacts, observations&hellip;"></textarea></div>
+  </div></div>
+  <div class="mfoot"><button onclick="closeModal('co-modal')">Cancel</button><button class="bp" onclick="saveCo()">Save company</button></div>
+</div></div>
+
+<!-- APPLICATION MODAL -->
+<div class="backdrop" id="ap-modal" onclick="bgCloseAp(event)"><div class="modal modal-wide">
+  <div class="mhead"><h2 id="ap-title">Add application</h2><button class="cbtn" onclick="closeApModal()">&#215;</button></div>
+  <div class="mbody">
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-manual-btn" onclick="switchTab('manual')">Fill manually</button>
+      <button class="tab-btn" id="tab-json-btn" onclick="switchTab('json')">Paste JSON</button>
+    </div>
+    <div class="tab-panel active" id="tab-manual">
+      <div class="fg">
+        <div class="ff full"><label>Role / position *</label><input type="text" id="ar" placeholder="e.g. SDR &ndash; Portuguese Market"></div>
+        <div class="ff full"><label>Job URL</label><input type="url" id="au" placeholder="https://&hellip;"></div>
+        <div class="ff"><label>Applied date</label><input type="date" id="ad"></div>
+        <div class="ff"><label>Status</label><select id="as">
+          <option value="applied" selected>Applied</option>
+          <option value="inprocess">In Process</option>
+          <option value="offer">Offer</option>
+          <option value="closed">Closed</option>
+        </select></div>
+        <div class="ff full"><label>CV file (PDF)</label>
+          <div class="pdf-drop" id="pdf-drop" ondragover="pdfDragOver(event)" ondragleave="pdfDragLeave()" ondrop="pdfDrop(event)">
+            <input type="file" id="apdf" accept="application/pdf" onchange="pdfSelected(event)">
+            <div class="pdf-drop-label">Drop PDF here or <strong>click to browse</strong></div>
+          </div>
+          <div class="pdf-preview" id="pdf-preview" style="display:none">
+            <span class="pdf-icon">&#128196;</span><span class="pdf-name" id="pdf-name"></span>
+            <span class="pdf-size" id="pdf-size"></span>
+            <button class="pdf-clear" onclick="clearPdf()">&#215;</button>
+          </div>
+        </div>
+        <div class="ff full"><label>Notes</label>
+          <div class="notes-feed" id="notes-feed"></div>
+          <div class="note-add-row">
+            <textarea id="ano" placeholder="Add a note…"></textarea>
+            <button class="bs" type="button" onclick="addNote()">Add</button>
+          </div></div>
+        <div class="ff full" id="changelog-section" style="display:none">
+          <div class="changelog">
+            <div class="changelog-title">Change log</div>
+            <div id="changelog-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-json">
+      <textarea class="json-paste" id="json-paste" placeholder="Paste the JSON from the conversation here&hellip;" oninput="jsonChanged()"></textarea>
+      <div class="json-err" id="json-err"></div>
+      <div class="json-ok" id="json-ok">&#10003; JSON valid &mdash; click &ldquo;Fill from JSON&rdquo; to populate the fields.</div>
+      <div class="json-hint">Expected format:<br>
+        <code>{ "role": "SDR &ndash; PT Market", "url": "https://&hellip;", "date": "2026-09-01", "status": "applied", "notes": "&hellip;" }</code><br><br>
+        Valid status values: <code>applied</code>, <code>inprocess</code>, <code>offer</code>, <code>closed</code><br>
+        Only fields present in the JSON will be updated. Existing fields are preserved.
+      </div>
+    </div>
+  </div>
+  <div class="mfoot">
+    <button id="ap-cancel-btn" onclick="closeApModal()">Cancel</button>
+    <button class="bs bp" id="json-import-btn" style="display:none" onclick="importAndSave()">Import &amp; Save</button>
+    <button class="bp" id="ap-save-btn" onclick="saveApp()">Save application</button>
+  </div>
+</div></div>
+
+<!-- NOTES MODAL -->
+<div class="backdrop" id="notes-modal" onclick="bgClose(event,'notes-modal')"><div class="modal">
+  <div class="mhead"><h2 id="notes-title">Notes</h2><button class="cbtn" onclick="closeModal('notes-modal')">&#215;</button></div>
+  <div class="mbody"><div class="notes-content" id="notes-body"></div></div>
+  <div class="mfoot"><button onclick="closeModal('notes-modal')">Close</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DB_NAME='ga_jt',DB_VER=1,ST='tracker',ST_M='meta';
+let db=null;
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(ST))d.createObjectStore(ST,{keyPath:'key'});if(!d.objectStoreNames.contains(ST_M))d.createObjectStore(ST_M,{keyPath:'key'});};r.onsuccess=e=>{db=e.target.result;res(db);};r.onerror=e=>rej(e);});}
+function dbGet(s,k){return new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).get(k);r.onsuccess=e=>res(e.target.result?e.target.result.value:null);r.onerror=e=>rej(e);});}
+function dbSet(s,k,v){return new Promise((res,rej)=>{const r=db.transaction(s,'readwrite').objectStore(s).put({key:k,value:v});r.onsuccess=()=>res();r.onerror=e=>rej(e);});}
+</script>
+<script id="data-script">
+const DEFAULT=[{id:1,name:'Revolut',tier:'1',type:'Company',site:'https://www.revolut.com/en-ES/careers/',li:'https://www.linkedin.com/company/revolut/jobs/',notes:'485 open positions.',apps:[]},{id:2,name:'Airwallex',tier:'1',type:'Company',site:'https://careers.airwallex.com/jobs/',li:'https://www.linkedin.com/company/airwallex/jobs/',notes:'Building Spain & Southern Europe commercial team from BCN.',apps:[]},{id:3,name:'Deel',tier:'1',type:'Company',site:'https://www.deel.com/careers/',li:'https://www.linkedin.com/company/deel/jobs/',notes:'BCN hub focused on multilingual SDRs for EMEA markets.',apps:[]},{id:4,name:'Remote',tier:'1',type:'Company',site:'https://remote.com/careers',li:'https://www.linkedin.com/company/remote.com/jobs/',notes:'',apps:[]},{id:5,name:'Factorial',tier:'1',type:'Company',site:'https://careers.factorialhr.com/#jobs',li:'https://www.linkedin.com/company/factorial-hr/jobs/',notes:'',apps:[]},{id:6,name:'Klarna',tier:'1',type:'Company',site:'https://www.klarna.com/careers/',li:'https://www.linkedin.com/company/klarna/jobs/',notes:'BCN hub at Passeig de Gracia.',apps:[]},{id:7,name:'Amenitiz',tier:'1',type:'Company',site:'https://amenitiz.com/en/careers#positions',li:'https://www.linkedin.com/company/amenitiz/jobs/',notes:"Partner's employer. Role on hold per Daniela Duque Romero.",apps:[]},{id:8,name:'Payhawk',tier:'2',type:'Company',site:'https://payhawk.com/careers#open-positions',li:'https://www.linkedin.com/company/payhawk/jobs/',notes:'BDR open in BCN.',apps:[]},{id:9,name:'Perk (TravelPerk)',tier:'2',type:'Company',site:'https://www.perk.com/careers/',li:'https://www.linkedin.com/company/travelperk/jobs/',notes:'',apps:[]},{id:10,name:'Navan',tier:'2',type:'Company',site:'https://navan.com/careers',li:'https://www.linkedin.com/company/navan/jobs/',notes:'First BCN office opening.',apps:[]},{id:11,name:'Qonto',tier:'2',type:'Company',site:'https://qonto.com/es/careers#jobs',li:'https://www.linkedin.com/company/qonto/jobs/',notes:'',apps:[]},{id:12,name:'Spendesk',tier:'2',type:'Company',site:'https://career.spendesk.com/jobs',li:'https://www.linkedin.com/company/spendesk/jobs/',notes:'',apps:[]},{id:13,name:'Kantox',tier:'2',type:'Company',site:'https://www.kantox.com/careers#job-openings',li:'https://www.linkedin.com/company/kantox/jobs/',notes:'FX hedging and international payments.',apps:[]},{id:14,name:'SumUp',tier:'2',type:'Company',site:'https://www.sumup.com/careers/',li:'https://www.linkedin.com/company/sumup/jobs/',notes:'',apps:[]},{id:15,name:'Finom',tier:'2',type:'Company',site:'https://jobs.eu.lever.co/pnlfin',li:'https://www.linkedin.com/company/finom-eu/jobs/',notes:'',apps:[]},{id:16,name:'Thunes',tier:'2',type:'Company',site:'https://www.thunes.com/jobs/',li:'https://www.linkedin.com/company/thunes/jobs/',notes:'Cross-border payments infrastructure.',apps:[]},{id:17,name:'EBANX',tier:'2',type:'Company',site:'https://job-boards.greenhouse.io/ebanx',li:'https://www.linkedin.com/company/ebanx/jobs/',notes:'Brazilian payments company.',apps:[]},{id:18,name:'Younited',tier:'2',type:'Company',site:'https://careers.younited-credit.com/',li:'https://www.linkedin.com/company/younited-credit/jobs/',notes:'Active in Portugal since 2018.',apps:[]},{id:19,name:'Nium',tier:'2',type:'Company',site:'https://jobs.lever.co/nium',li:'https://www.linkedin.com/company/nium-global/jobs/',notes:'',apps:[]},{id:20,name:'Abacum',tier:'2',type:'Company',site:'https://www.abacum.ai/company/careers',li:'https://www.linkedin.com/company/abacum-io/jobs/',notes:'FP&A SaaS, BCN. CFO-facing ICP.',apps:[]},{id:21,name:'PayRetailers',tier:'2',type:'Company',site:'https://payretailers.careers.hibob.com/jobs',li:'https://www.linkedin.com/company/payretailers/jobs/',notes:'',apps:[]},{id:22,name:'Yuno',tier:'2',type:'Company',site:'https://jobs.lever.co/yuno?location=Spain',li:'https://www.linkedin.com/company/yuno-payments/jobs/',notes:'',apps:[]},{id:23,name:'seQura',tier:'2',type:'Company',site:'https://sequra.recruitee.com/career-page-jobs',li:'https://www.linkedin.com/company/sequra/jobs/',notes:'',apps:[]},{id:24,name:'Canary Technologies',tier:'2',type:'Company',site:'https://jobs.lever.co/canarytechnologies',li:'https://www.linkedin.com/company/canary-technologies/jobs/',notes:'BCN office. Full-Cycle Sales Iberia open.',apps:[]},{id:25,name:'Personio',tier:'2',type:'Company',site:'https://www.personio.com/about-personio/careers/',li:'https://www.linkedin.com/company/personio/jobs/',notes:'BCN office at Passeig de Gracia.',apps:[]},{id:26,name:'Emburse',tier:'2',type:'Company',site:'https://www.emburse.com/company/careers',li:'https://www.linkedin.com/company/emburse/jobs/',notes:'AP automation + expense. BCN office.',apps:[]},{id:27,name:'Monei',tier:'3',type:'Company',site:'https://jobs.ashbyhq.com/monei',li:'https://www.linkedin.com/company/monei/jobs/',notes:'',apps:[]},{id:28,name:'NoviCap',tier:'3',type:'Company',site:'https://novicap.com/en/work-with-us/',li:'https://www.linkedin.com/company/novicap-fintech/jobs/',notes:'Supply chain finance. BCN.',apps:[]},{id:29,name:'Belvo',tier:'3',type:'Company',site:'https://belvo.com/careers/',li:'https://www.linkedin.com/company/belvo/jobs/',notes:'Open Banking API for LATAM.',apps:[]},{id:30,name:'Wipay',tier:'3',type:'Company',site:'https://wipay.es/trabaja-con-nosotros/',li:'https://www.linkedin.com/company/wipay-es/jobs/',notes:'',apps:[]},{id:31,name:'Neverless',tier:'3',type:'Company',site:'https://neverless.com/careers',li:'https://www.linkedin.com/company/neverless/jobs/',notes:'',apps:[]},{id:32,name:'Surfe',tier:'3',type:'Company',site:'https://www.surfe.com/careers',li:'https://www.linkedin.com/company/surfe-hq/jobs/',notes:'',apps:[]},{id:33,name:'Babel Profiles',tier:'Ag\u00eancia BCN',type:'Ag\u00eancia',site:'https://babelprofiles.com/job-vacancies-in-barcelona-and-beyond/',li:'https://www.linkedin.com/company/babel-profiles/jobs/',notes:'Boutique BCN agency. Register CV.',apps:[]},{id:34,name:'Talent Search People',tier:'Ag\u00eancia BCN',type:'Ag\u00eancia',site:'https://talentsearchpeople.com/en/looking-for-job/',li:'https://www.linkedin.com/company/talent-search-people/jobs/',notes:'',apps:[]},{id:35,name:'Storm2',tier:'Ag\u00eancia Fintech EMEA',type:'Ag\u00eancia',site:'https://storm2.com/jobs/',li:'https://www.linkedin.com/company/storm2/jobs/',notes:'Global fintech recruitment.',apps:[]},{id:36,name:'PaymentGenes',tier:'Ag\u00eancia Payments Global',type:'Ag\u00eancia',site:'https://www.paymentgenes.com/fintech-jobs',li:'https://www.linkedin.com/company/paymentgenes-recruitment/jobs/',notes:'Beril Yilmaz connected.',apps:[]},{id:37,name:'Welcome to the Jungle',tier:'Platform Europa',type:'Platform',site:'https://app.welcometothejungle.com/companies',li:'https://www.linkedin.com/company/welcome-to-the-jungle/jobs/',notes:'',apps:[]},{id:38,name:'Landing.Jobs',tier:'Platform Europa/PT',type:'Platform',site:'https://landing.jobs/jobs',li:'https://www.linkedin.com/company/landing-jobs/jobs/',notes:'Strong for lusophone markets.',apps:[]},{id:39,name:'Remotive',tier:'Platform Remote Tech',type:'Platform',site:'https://remotive.com/',li:'https://www.linkedin.com/company/remotive-io/jobs/',notes:'',apps:[]},{id:40,name:'Himalayas',tier:'Platform Remote Tech',type:'Platform',site:'https://himalayas.app/jobs',li:'https://www.linkedin.com/company/himalayas-app/jobs/',notes:'',apps:[]},{id:41,name:'Wellfound',tier:'Platform Startups',type:'Platform',site:'https://wellfound.com/jobs',li:'https://www.linkedin.com/company/wellfound/jobs/',notes:'Create candidate profile.',apps:[]}];
+</script>
+<script>
+let data=[],openRows=new Set(),editCoId=null,editAppCoId=null,editAppId=null,pendingPdfData=null;
+let colWidths=[36,210,95,90,180,160,100];
+const msState={tier:[],type:[],appstatus:[],hasapp:[],apStatus:[],apCompany:[]};
+let sortCol='tier', sortAsc=true;
+let apSortCol='date', apSortAsc=false;
+
+async function loadData(){try{const s=await dbGet(ST,'companies');data=s?s:DEFAULT.map(d=>({...d,apps:d.apps||[]}));const c=await dbGet(ST_M,'cols');if(c&&c.length===colWidths.length)colWidths=c;}catch(e){data=DEFAULT.map(d=>({...d,apps:[]}));}}
+async function persist(){try{await dbSet(ST,'companies',data);}catch(e){toast('Warning: could not save.');}}
+async function persistCols(){try{await dbSet(ST_M,'cols',colWidths);}catch(e){}}
+
+function updateExportInfo(){const el=document.getElementById('export-info');const ts=localStorage.getItem('ga_exp');if(!ts){el.textContent='Never exported';el.className='export-info warn';return;}const d=Math.floor((Date.now()-parseInt(ts))/86400000);el.textContent=d===0?'Exported today':d===1?'Exported yesterday':'Exported '+d+'d ago';el.className='export-info'+(d>7?' warn':'');}
+
+function exportJSON(){const b=new Blob([JSON.stringify({v:3,at:new Date().toISOString(),data},null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='job_tracker_data.json';a.click();URL.revokeObjectURL(u);localStorage.setItem('ga_exp',Date.now());updateExportInfo();toast('Exported.');}
+function importJSON(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=async ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      const imp=p.data||p;
+      if(!Array.isArray(imp))throw new Error('Invalid format');
+      const isFullReplace=imp.length>0&&imp.every(d=>d.name);
+      // Check if this looks like a full export or a partial import
+      const existingNames=new Set(data.map(d=>d.name.toLowerCase().trim()));
+      const added=[],skipped=[];
+      imp.forEach(d=>{
+        if(!d.name)return;
+        if(existingNames.has(d.name.toLowerCase().trim())){
+          skipped.push(d.name);
+        } else {
+          data.push({...d,id:nextId(data),apps:(d.apps||[]).map(a=>({...a}))});
+          existingNames.add(d.name.toLowerCase().trim());
+          added.push(d.name);
+        }
+      });
+      await persist();initFilters();renderCos();renderAppsView();
+      let msg='Added '+added.length+' company'+(added.length!==1?'ies':'y')+'.';
+      if(skipped.length) msg+=' '+skipped.length+' duplicate'+(skipped.length!==1?'s':'')+' skipped ('+skipped.join(', ')+') — use Edit to update existing entries.';
+      toast(msg);
+    }catch(e){toast('Import failed — check the JSON file.');}
+    e.target.value='';
+  };
+  r.readAsText(f);
+}
+
+function buildMs(cid,label,opts,sk,cb){const w=document.getElementById(cid);if(!w)return;w.innerHTML='';const tr=document.createElement('button');tr.className='ms-trigger'+(msState[sk].length?' has-sel':'');tr.id='ms-tr-'+sk;tr.textContent=msState[sk].length===0?label:msState[sk].length===1?(opts.find(o=>o.v===msState[sk][0])||{l:msState[sk][0]}).l:label+' ('+msState[sk].length+')';tr.onclick=e=>{e.stopPropagation();toggleDD(sk);};const dd=document.createElement('div');dd.className='ms-dropdown';dd.id='ms-dd-'+sk;opts.forEach(o=>{const it=document.createElement('div');it.className='ms-item';const cb2=document.createElement('input');cb2.type='checkbox';cb2.id='cb-'+sk+'-'+o.v;cb2.checked=msState[sk].includes(o.v);cb2.onchange=()=>{if(cb2.checked){if(!msState[sk].includes(o.v))msState[sk].push(o.v);}else msState[sk]=msState[sk].filter(x=>x!==o.v);buildMs(cid,label,opts,sk,cb);cb();};const lb=document.createElement('label');lb.htmlFor=cb2.id;lb.textContent=o.l;it.appendChild(cb2);it.appendChild(lb);dd.appendChild(it);});const div=document.createElement('div');div.className='ms-divider';dd.appendChild(div);const clr=document.createElement('button');clr.className='ms-clear';clr.textContent='Clear';clr.onclick=()=>{msState[sk]=[];buildMs(cid,label,opts,sk,cb);cb();};dd.appendChild(clr);w.appendChild(tr);w.appendChild(dd);}
+function toggleDD(sk){const dd=document.getElementById('ms-dd-'+sk);const open=dd.classList.contains('open');document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open'));if(!open)dd.classList.add('open');}
+document.addEventListener('click',()=>document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open')));
+
+const TIERS=[{v:'1',l:'Tier 1'},{v:'2',l:'Tier 2'},{v:'3',l:'Tier 3'},{v:'Ag\u00eancia BCN',l:'Ag\u00eancia BCN'},{v:'Ag\u00eancia Fintech EMEA',l:'Ag\u00eancia Fintech EMEA'},{v:'Ag\u00eancia Payments Global',l:'Ag\u00eancia Payments Global'},{v:'Platform Europa',l:'Platform Europa'},{v:'Platform Europa/PT',l:'Platform Europa/PT'},{v:'Platform Remote Tech',l:'Platform Remote Tech'},{v:'Platform Startups',l:'Platform Startups'}];
+const TYPES=[{v:'Company',l:'Company'},{v:'Ag\u00eancia',l:'Ag\u00eancia'},{v:'Platform',l:'Platform'}];
+const STATUSES=[{v:'applied',l:'Applied'},{v:'inprocess',l:'In Process'},{v:'offer',l:'Offer'},{v:'closed',l:'Closed'},{v:'none',l:'No applications'}];
+const HASAPP=[{v:'yes',l:'Has applications'},{v:'no',l:'None yet'}];
+
+function initFilters(){
+  buildMs('ms-tier','Tier',TIERS,'tier',renderCos);
+  buildMs('ms-type','Type',TYPES,'type',renderCos);
+  buildMs('ms-appstatus','App status',STATUSES,'appstatus',renderCos);
+  buildMs('ms-hasapp','Applications',HASAPP,'hasapp',renderCos);
+  const apSt=STATUSES.filter(s=>s.v!=='none');
+  buildMs('ms-ap-status','Status',apSt,'apStatus',renderAppsView);
+  rebuildApCoFilter();
+}
+function rebuildApCoFilter(){const cos=data.filter(d=>(d.apps||[]).length).map(d=>({v:String(d.id),l:d.name})).sort((a,b)=>a.l.localeCompare(b.l));buildMs('ms-ap-company','Company',cos,'apCompany',renderAppsView);}
+function clearCoFilters(){['tier','type','appstatus','hasapp'].forEach(k=>msState[k]=[]);document.getElementById('co-search').value='';initFilters();renderCos();}
+function clearApFilters(){['apStatus','apCompany'].forEach(k=>msState[k]=[]);document.getElementById('ap-search').value='';initFilters();renderAppsView();}
+
+function tierOrd(t){return t==='1'?1:t==='2'?2:t==='3'?3:t.startsWith('Ag')?4:5;}
+function sortCos(field){if(sortCol===field)sortAsc=!sortAsc;else{sortCol=field;sortAsc=true;}renderCos();}
+function multiSort(arr){return [...arr].sort((a,b)=>{let va,vb;if(sortCol==='tier'){va=tierOrd(a.tier);vb=tierOrd(b.tier);}else{va=(a[sortCol]||'').toLowerCase();vb=(b[sortCol]||'').toLowerCase();}if(va<vb)return sortAsc?-1:1;if(va>vb)return sortAsc?1:-1;return a.name.localeCompare(b.name);});}
+
+const SL={applied:'Applied',inprocess:'In Process',offer:'Offer',closed:'Closed'};
+const SC={applied:'st-applied',inprocess:'st-screening',offer:'st-offer',closed:'st-rejected'};
+function sBadge(s){return '<span class="status '+(SC[s]||'st-applied')+'">'+(SL[s]||s)+'</span>';}
+function tBadge(t){const c=t==='1'?'t1':t==='2'?'t2':t==='3'?'t3':t.startsWith('Ag')?'tag':'tpl';const l=t==='1'?'Tier 1':t==='2'?'Tier 2':t==='3'?'Tier 3':t;return '<span class="tier-badge '+c+'">'+l+'</span>';}
+function lCell(url){if(!url)return '<span style="color:var(--text-3)">&#8212;</span>';let d='Link';try{d=new URL(url).hostname.replace('www.','').split('.').slice(0,2).join('.');}catch(e){}return '<a class="link-a" href="'+url+'" target="_blank" rel="noopener">'+d+' &#8599;</a>';}
+function fmtDate(iso){if(!iso)return '&#8212;';const p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function fmtTs(ts){const d=new Date(ts);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function nextId(arr){return arr.length?Math.max(...arr.map(x=>x.id))+1:1;}
+function aCnt(d){const a=d.apps||[];if(!a.length)return '';const n=a.filter(x=>!['rejected','withdrawn'].includes(x.status)).length;return n?'<span style="background:var(--accent-bg);color:var(--accent-text);border-radius:10px;font-size:10px;font-weight:600;padding:1px 6px;margin-left:4px">'+n+'</span>':'';}
+
+function getFilteredCos(){const q=(document.getElementById('co-search').value||'').toLowerCase();return multiSort(data.filter(d=>{if(q&&!d.name.toLowerCase().includes(q)&&!(d.notes||'').toLowerCase().includes(q))return false;if(msState.tier.length&&!msState.tier.includes(d.tier))return false;if(msState.type.length&&!msState.type.includes(d.type))return false;const a=d.apps||[];if(msState.hasapp.includes('yes')&&!msState.hasapp.includes('no')&&!a.length)return false;if(msState.hasapp.includes('no')&&!msState.hasapp.includes('yes')&&a.length)return false;if(msState.appstatus.length){const nn=msState.appstatus.filter(s=>s!=='none');if(msState.appstatus.includes('none')&&!a.length&&nn.length===0)return true;if(nn.length&&!nn.some(s=>a.some(x=>x.status===s)))return false;}return true;}));}
+
+function buildCoHead(){const cols=[{k:'exp',l:''},{k:'name',l:'Company',s:true},{k:'tier',l:'Tier',s:true},{k:'type',l:'Type',s:true},{k:'site',l:'Careers page'},{k:'li',l:'LinkedIn Jobs'},{k:'actions',l:''}];const th=document.getElementById('co-thead');const tr=document.createElement('tr');cols.forEach((c,i)=>{const t=document.createElement('th');t.style.width=colWidths[i]+'px';t.style.minWidth=(i===0?28:60)+'px';if(c.s){t.className='sortable'+(sortCol===c.k?' sorted':'');t.innerHTML=c.l+'<span class="sarr">'+(sortCol===c.k?(sortAsc?'&#9650;':'&#9660;'):'&#8645;')+'</span>';t.onclick=()=>sortCos(c.k);}else t.textContent=c.l;if(i<cols.length-1){const rz=document.createElement('div');rz.className='resizer';rz.addEventListener('mousedown',e=>startRz(e,i));t.appendChild(rz);}tr.appendChild(t);});th.innerHTML='';th.appendChild(tr);}
+
+function renderCos(){
+  buildCoHead();
+  const rows=getFilteredCos();
+  const tbody=document.getElementById('co-tbody');
+  const t1=data.filter(d=>d.tier==='1').length,t2=data.filter(d=>d.tier==='2').length,t3=data.filter(d=>d.tier==='3').length;
+  const tot=data.reduce((s,d)=>s+(d.apps||[]).length,0);
+  const act=data.reduce((s,d)=>s+(d.apps||[]).filter(a=>a.status!=='closed').length,0);
+  document.getElementById('co-stats').innerHTML='<div class="pill"><strong>'+data.length+'</strong> companies</div><div class="pill"><strong>'+t1+'</strong> T1 &middot; <strong>'+t2+'</strong> T2 &middot; <strong>'+t3+'</strong> T3</div><div class="pill"><strong>'+tot+'</strong> applications &middot; <strong>'+act+'</strong> active</div><div class="pill"><strong>'+rows.length+'</strong> showing</div>';
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty"><div>&#128269;</div><p>No companies match.</p></div></td></tr>';return;}
+  let html='';
+  rows.forEach(d=>{
+    const isOpen=openRows.has(d.id);
+    const apps=d.apps||[];
+    html+='<tr class="company-row"><td style="text-align:center;padding:6px 4px"><button class="expand-btn'+(isOpen?' open':'')+'" onclick="toggleRow('+d.id+')">'+(isOpen?'&#8722;':'&#43;')+'</button></td>';
+    html+='<td><div class="name-cell"><span style="font-weight:500">'+d.name+'</span>'+aCnt(d)+'</div></td>';
+    html+='<td>'+tBadge(d.tier)+'</td><td style="color:var(--text-2)">'+(d.type||'')+'</td>';
+    html+='<td>'+lCell(d.site)+'</td><td>'+lCell(d.li)+'</td>';
+    html+='<td style="text-align:right"><div style="display:flex;gap:4px;justify-content:flex-end"><button class="bs" onclick="openCo('+d.id+')">Edit</button><button class="bd" onclick="delCo('+d.id+')">Del</button></div></td></tr>';
+    html+='<tr class="apps-row'+(isOpen?' open':'')+'" id="arow-'+d.id+'">';
+    html+='<td class="apps-cell" colspan="7"><div class="apps-inner">';
+    html+='<div class="apps-header"><span class="apps-label">Applications ('+apps.length+')</span><button class="bs bp" onclick="openApp('+d.id+',null)">+ Add application</button></div>';
+    if(apps.length){
+      html+='<table class="apps-table"><thead><tr><th style="width:24%">Role</th><th style="width:10%">Date</th><th style="width:11%">Status</th><th style="width:16%">CV file</th><th style="width:8%">Notes</th><th style="width:9%">Link</th><th style="width:4%"></th></tr></thead><tbody>';
+      apps.forEach(a=>{
+        html+='<tr><td><button class="role-link" onclick="openApp('+d.id+','+a.id+')" title="'+(a.role||'').replace(/"/g,'&quot;')+'">'+(a.role||'&#8212;')+'</button></td>';
+        html+='<td style="color:var(--text-2)">'+fmtDate(a.date)+'</td><td>'+sBadge(a.status)+'</td>';
+        html+='<td>'+(a.pdfBase64?'<button class="cv-dl" onclick="dlPdf('+a.id+','+d.id+')">&#128196; '+(a.pdfName||'CV.pdf')+'</button>':'<span style="color:var(--text-3)">&#8212;</span>')+'</td>';
+        html+='<td>'+((Array.isArray(a.notes)?a.notes.length:a.notes)?'<button class="notes-btn has-notes" onclick="openNotes('+d.id+','+a.id+')">View</button>':'<span style="color:var(--text-3)">&#8212;</span>')+'</td>';
+        html+='<td>'+(a.url?'<a class="link-a" href="'+a.url+'" target="_blank" rel="noopener">View &#8599;</a>':'&#8212;')+'</td>';
+        html+='<td><button class="bd" onclick="delApp('+d.id+','+a.id+')">&#215;</button></td></tr>';
+      });
+      html+='</tbody></table>';
+    } else {
+      html+='<div class="app-empty">No applications logged yet.</div>';
+    }
+    html+='</div></td></tr>';
+  });
+  tbody.innerHTML=html;
+}
+
+function toggleRow(id){openRows.has(id)?openRows.delete(id):openRows.add(id);renderCos();}
+
+function sortApView(f){if(apSortCol===f)apSortAsc=!apSortAsc;else{apSortCol=f;apSortAsc=true;}renderAppsView();}
+function renderAppsView(){
+  const q=(document.getElementById('ap-search').value||'').toLowerCase();
+  let all=[];
+  data.forEach(co=>(co.apps||[]).forEach(a=>all.push({...a,coId:co.id,coName:co.name,coTier:co.tier})));
+  if(msState.apStatus.length)all=all.filter(a=>msState.apStatus.includes(a.status));
+  if(msState.apCompany.length)all=all.filter(a=>msState.apCompany.includes(String(a.coId)));
+  if(q)all=all.filter(a=>(a.role||'').toLowerCase().includes(q)||(a.coName||'').toLowerCase().includes(q));
+  all.sort((a,b)=>{let va=a[apSortCol]||'',vb=b[apSortCol]||'';if(va<vb)return apSortAsc?-1:1;if(va>vb)return apSortAsc?1:-1;return 0;});
+  const act=all.filter(a=>a.status!=='closed').length;
+  document.getElementById('ap-stats').innerHTML='<div class="pill"><strong>'+all.length+'</strong> applications</div><div class="pill"><strong>'+act+'</strong> active</div>';
+  const AP_COLS=[{k:'coName',l:'Company',w:'18%',s:true},{k:'role',l:'Role',w:'26%',s:true},{k:'date',l:'Date',w:'9%',s:true},{k:'status',l:'Status',w:'11%',s:true},{k:'pdf',l:'CV file',w:'14%'},{k:'notes',l:'Notes',w:'8%'},{k:'link',l:'Link',w:'9%'}];
+const apThead=document.getElementById('ap-thead');
+const apTr=document.createElement('tr');
+AP_COLS.forEach(c=>{const th=document.createElement('th');th.style.width=c.w;th.innerHTML=c.l+(c.s?'<span class="sarr">'+(apSortCol===c.k?(apSortAsc?'&#9650;':'&#9660;'):'&#8645;')+'</span>':'');if(c.s){th.className='sortable'+(apSortCol===c.k?' sorted':'');th.onclick=()=>sortApView(c.k);}apTr.appendChild(th);});
+apThead.innerHTML='';apThead.appendChild(apTr);
+  const tb=document.getElementById('ap-tbody');
+  if(!all.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><div>&#128203;</div><p>No applications yet.</p></div></td></tr>';return;}
+  tb.innerHTML=all.map(a=>'<tr><td>'+tBadge(a.coTier)+' <span style="font-size:11px;color:var(--text-2)">'+a.coName+'</span></td><td><button class="role-link" onclick="openApp('+a.coId+','+a.id+')" title="'+(a.role||'').replace(/"/g,'&quot;')+'">'+(a.role||'&#8212;')+'</button></td><td style="color:var(--text-2)">'+fmtDate(a.date)+'</td><td>'+sBadge(a.status)+'</td><td>'+(a.pdfBase64?'<button class="cv-dl" onclick="dlPdf('+a.id+','+a.coId+')">&#128196; '+(a.pdfName||'CV.pdf')+'</button>':'<span style="color:var(--text-3)">&#8212;</span>')+'</td><td>'+((Array.isArray(a.notes)?a.notes.length:a.notes)?'<button class="notes-btn has-notes" onclick="openNotes('+a.coId+','+a.id+')">View</button>':'<span style="color:var(--text-3)">&#8212;</span>')+'</td><td>'+(a.url?'<a class="link-a" href="'+a.url+'" target="_blank" rel="noopener">View &#8599;</a>':'&#8212;')+'</td></tr>').join('');
+}
+
+function switchView(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('view-'+n).classList.add('active');document.querySelectorAll('.nav-btn').forEach((b,i)=>{if((n==='companies'&&i===0)||(n==='applications'&&i===1))b.classList.add('active');});if(n==='applications'){rebuildApCoFilter();renderAppsView();}}
+
+let rzState=null;
+function startRz(e,i){e.preventDefault();e.stopPropagation();rzState={i,x:e.clientX,w:colWidths[i]};e.target.classList.add('dragging');document.addEventListener('mousemove',doRz);document.addEventListener('mouseup',stopRz);}
+function doRz(e){if(!rzState)return;colWidths[rzState.i]=Math.max(60,rzState.w+e.clientX-rzState.x);const ths=document.querySelectorAll('#co-thead th');if(ths[rzState.i])ths[rzState.i].style.width=colWidths[rzState.i]+'px';}
+function stopRz(){document.querySelectorAll('.resizer.dragging').forEach(r=>r.classList.remove('dragging'));document.removeEventListener('mousemove',doRz);document.removeEventListener('mouseup',stopRz);persistCols();rzState=null;renderCos();}
+
+function openNotes(coId,appId){
+  const co=data.find(x=>x.id==coId);const a=co&&co.apps.find(x=>x.id==appId);if(!a)return;
+  document.getElementById('notes-title').textContent=a.role||'Notes';
+  const notes=Array.isArray(a.notes)?a.notes:(a.notes?[{ts:Date.now(),text:a.notes}]:[]);
+  const body=document.getElementById('notes-body');
+  if(!notes.length){body.innerHTML='<span style="color:var(--text-3);font-size:12px">No notes yet.</span>';}
+  else{body.innerHTML='<div class="notes-feed" style="max-height:400px">'+notes.slice().reverse().map(n=>'<div class="note-item"><div class="note-ts">'+fmtTs(n.ts)+'</div><div class="note-body">'+n.text.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div></div>').join('')+'</div>';}
+  document.getElementById('notes-modal').classList.add('open');
+}
+
+function renderNotesFeed(notes){
+  const feed=document.getElementById('notes-feed');if(!feed)return;
+  if(!notes||!notes.length){feed.innerHTML='<span style="color:var(--text-3);font-size:11px;font-style:italic">No notes yet.</span>';return;}
+  feed.innerHTML=notes.slice().reverse().map(n=>'<div class="note-item"><div class="note-ts">'+fmtTs(n.ts)+'</div><div class="note-text">'+n.text.replace(/</g,'&lt;')+'</div></div>').join('');
+}
+function addNote(){
+  const txt=document.getElementById('ano').value.trim();if(!txt)return;
+  if(!window._pendingNotes)window._pendingNotes=[];
+  window._pendingNotes.push({ts:Date.now(),text:txt});
+  document.getElementById('ano').value='';
+  renderNotesFeed([...(window._existingNotes||[]),...window._pendingNotes]);
+}
+
+function allNotes(){return[...(window._existingNotes||[]),...(window._pendingNotes||[])];}
+function renderNotesFeed(notes){
+  const feed=document.getElementById('notes-feed');
+  if(!feed)return;
+  if(!notes||!notes.length){feed.innerHTML='<span style="color:var(--text-3);font-size:11px;font-style:italic">No notes yet.</span>';return;}
+  const all=[...notes];
+  feed.innerHTML=all.slice().reverse().map((n,ri)=>{
+    const i=all.length-1-ri;
+    const isEditing=window._editingNoteIdx===i;
+    const txt=n.text.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    return '<div class="note-item" id="note-item-'+i+'">'
+      +'<div class="note-ts">'+fmtTs(n.ts)
+      +'<span style="float:right;display:flex;gap:6px">'
+      +'<button class="note-action-btn" onclick="editNoteStart('+i+')">Edit</button>'
+      +'<button class="note-action-btn danger" onclick="deleteNote('+i+')">Del</button>'
+      +'</span></div>'
+      +(isEditing
+        ?'<textarea id="note-edit-ta" style="width:100%;min-height:60px;resize:vertical;font-size:12px;margin-top:4px">'+txt+'</textarea>'
+        +' <div style="display:flex;gap:6px;margin-top:4px;justify-content:flex-end">'
+        +'<button class="bs" onclick="editNoteCancel()">Cancel</button>'
+        +'<button class="bs bp" onclick="editNoteSave('+i+')">Save</button></div>'
+        :'<div class="note-body">'+txt+'</div>')
+      +'</div>';
+  }).join('');
+}
+function editNoteStart(i){window._editingNoteIdx=i;renderNotesFeed(allNotes());}
+function editNoteCancel(){window._editingNoteIdx=undefined;renderNotesFeed(allNotes());}
+function editNoteSave(i){
+  const ta=document.getElementById('note-edit-ta');if(!ta)return;
+  const txt=ta.value.trim();if(!txt)return;
+  const all=allNotes();
+  if(i<(window._existingNotes||[]).length) window._existingNotes[i].text=txt;
+  else window._pendingNotes[i-(window._existingNotes||[]).length].text=txt;
+  window._editingNoteIdx=undefined;
+  renderNotesFeed(allNotes());
+}
+function deleteNote(i){
+  if(!confirm('Delete this note?'))return;
+  const exLen=(window._existingNotes||[]).length;
+  if(i<exLen) window._existingNotes.splice(i,1);
+  else window._pendingNotes.splice(i-exLen,1);
+  window._editingNoteIdx=undefined;
+  renderNotesFeed(allNotes());
+}
+function addNote(){
+  const ta=document.getElementById('ano');
+  const txt=ta.value.trim();if(!txt)return;
+  if(!window._pendingNotes)window._pendingNotes=[];
+  window._pendingNotes.push({ts:Date.now(),text:txt});
+  ta.value='';
+  renderNotesFeed([...(window._existingNotes||[]),...window._pendingNotes]);
+}
+function switchTab(t){
+  ['manual','json'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+    document.getElementById('tab-'+x+'-btn').classList.toggle('active',x===t);
+  });
+  document.getElementById('json-import-btn').style.display=t==='json'?'inline-block':'none';
+  document.getElementById('ap-save-btn').style.display=t==='manual'?'inline-block':'none';
+  document.getElementById('ap-cancel-btn').style.display=t==='manual'?'inline-block':'none';
+}
+function jsonChanged(){const raw=document.getElementById('json-paste').value.trim();const err=document.getElementById('json-err'),ok=document.getElementById('json-ok');err.classList.remove('show');ok.classList.remove('show');if(!raw)return;try{const o=JSON.parse(raw);if(!o.role&&!o.position){err.textContent='Missing "role".';err.classList.add('show');return;}ok.classList.add('show');}catch(e){err.textContent='Invalid JSON.';err.classList.add('show');}}
+
+
+function pdfDragOver(e){e.preventDefault();document.getElementById('pdf-drop').classList.add('dragover');}
+function pdfDragLeave(){document.getElementById('pdf-drop').classList.remove('dragover');}
+function pdfDrop(e){e.preventDefault();document.getElementById('pdf-drop').classList.remove('dragover');const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')readPdf(f);}
+function pdfSelected(e){const f=e.target.files[0];if(f)readPdf(f);}
+function readPdf(f){const r=new FileReader();r.onload=ev=>{pendingPdfData={name:f.name,size:f.size,base64:ev.target.result.split(',')[1]};showPdfPrev(f.name,f.size);};r.readAsDataURL(f);}
+function showPdfPrev(n,s){document.getElementById('pdf-drop').style.display='none';document.getElementById('pdf-preview').style.display='flex';document.getElementById('pdf-name').textContent=n;document.getElementById('pdf-size').textContent=fmtBytes(s);}
+function clearPdf(){pendingPdfData=null;document.getElementById('pdf-drop').style.display='block';document.getElementById('pdf-preview').style.display='none';document.getElementById('apdf').value='';}
+function fmtBytes(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';}
+function dlPdf(appId,coId){const co=data.find(x=>x.id==coId);const a=co&&co.apps.find(x=>x.id==appId);if(!a||!a.pdfBase64)return;const bytes=atob(a.pdfBase64);const arr=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);const blob=new Blob([arr],{type:'application/pdf'});const u=URL.createObjectURL(blob);const el=document.createElement('a');el.href=u;el.download=a.pdfName||'cv.pdf';el.click();URL.revokeObjectURL(u);}
+
+function openCo(id){editCoId=id;document.getElementById('co-title').textContent=id?'Edit company':'Add company';if(id){const d=data.find(x=>x.id===id);if(!d)return;document.getElementById('cn').value=d.name||'';document.getElementById('ct').value=d.tier||'2';document.getElementById('ctype').value=d.type||'Company';document.getElementById('cs').value=d.site||'';document.getElementById('cl').value=d.li||'';document.getElementById('cno').value=d.notes||'';}else{['cn','cs','cl','cno'].forEach(i=>document.getElementById(i).value='');document.getElementById('ct').value='2';document.getElementById('ctype').value='Company';}document.getElementById('co-modal').classList.add('open');setTimeout(()=>document.getElementById('cn').focus(),60);}
+async function saveCo(){const name=document.getElementById('cn').value.trim();if(!name){toast('Company name is required.');return;}const e={name,tier:document.getElementById('ct').value,type:document.getElementById('ctype').value,site:document.getElementById('cs').value.trim(),li:document.getElementById('cl').value.trim(),notes:document.getElementById('cno').value.trim()};if(editCoId){const i=data.findIndex(x=>x.id===editCoId);if(i!==-1)data[i]={...data[i],...e};toast('Saved.');}else{data.push({id:nextId(data),...e,apps:[]});toast('Company added.');}await persist();closeModal('co-modal');renderCos();}
+async function delCo(id){const d=data.find(x=>x.id===id);if(!d||!confirm('Delete "'+d.name+'" and all its applications?'))return;data=data.filter(x=>x.id!==id);openRows.delete(id);await persist();renderCos();toast('Deleted.');}
+
+function openApp(coId,appId){
+  editAppCoId=coId;editAppId=appId;
+  document.getElementById('ap-title').textContent=appId?'Edit application':'Add application';
+  pendingPdfData=null;clearPdf();
+  document.getElementById('json-paste').value='';
+  document.getElementById('json-err').classList.remove('show');
+  document.getElementById('json-ok').classList.remove('show');
+  switchTab('manual');
+  const clSection=document.getElementById('changelog-section');
+  const clBody=document.getElementById('changelog-body');
+  if(appId){
+    const co=data.find(x=>x.id===coId);const a=co&&co.apps.find(x=>x.id===appId);if(!a)return;
+    document.getElementById('ar').value=a.role||'';document.getElementById('au').value=a.url||'';
+    document.getElementById('ad').value=a.date||'';document.getElementById('as').value=a.status||'applied';
+    document.getElementById('ano').value=a.notes||'';
+    if(a.pdfBase64){pendingPdfData={name:a.pdfName,size:a.pdfSize,base64:a.pdfBase64};showPdfPrev(a.pdfName,a.pdfSize);}
+    const rawNotes=a.notes;
+    let existNotes=[];
+    if(Array.isArray(rawNotes)) existNotes=rawNotes;
+    else if(rawNotes && typeof rawNotes==='string' && rawNotes.trim()) existNotes=[{ts:a.createdAt||Date.now(),text:rawNotes.trim()}];
+    window._existingNotes=existNotes.map(n=>({...n}));
+    window._pendingNotes=[];
+    document.getElementById('ano').value='';
+    renderNotesFeed(window._existingNotes);
+    if(a.changelog&&a.changelog.length){
+      clSection.style.display='block';
+      clBody.innerHTML=a.changelog.slice().reverse().map(e=>'<div class="cl-item"><span class="cl-ts">'+fmtTs(e.ts)+'</span><span class="cl-desc">'+(Array.isArray(e.changes)?e.changes.join('; '):e.changes)+'</span></div>').join('');
+    } else clSection.style.display='none';
+  } else {
+    ['ar','au','ano'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('ad').value=new Date().toISOString().slice(0,10);
+    document.getElementById('as').value='applied';
+    document.getElementById('ano').value='';
+    window._existingNotes=[];window._pendingNotes=[];
+    renderNotesFeed([]);
+    clSection.style.display='none';
+  }
+  document.getElementById('ap-modal').classList.add('open');
+  // Take snapshot of initial state for unsaved-changes detection
+  window._apModalSnapshot={
+    role:(document.getElementById('ar')||{}).value||'',
+    url:(document.getElementById('au')||{}).value||'',
+    date:(document.getElementById('ad')||{}).value||'',
+    status:(document.getElementById('as')||{}).value||'',
+    pdfName:pendingPdfData?pendingPdfData.name:'',
+    notesJSON:JSON.stringify((window._existingNotes||[]).map(n=>({ts:n.ts,text:n.text})))
+  };
+  setTimeout(()=>document.getElementById('ar').focus(),60);
+}
+
+async function saveApp(){
+  const role=document.getElementById('ar').value.trim();if(!role){toast('Role is required.');return;}
+  const co=data.find(x=>x.id===editAppCoId);if(!co)return;if(!co.apps)co.apps=[];
+  const getPdf=(ex)=>({pdfBase64:pendingPdfData?pendingPdfData.base64:(ex?ex.pdfBase64:null),pdfName:pendingPdfData?pendingPdfData.name:(ex?ex.pdfName:null),pdfSize:pendingPdfData?pendingPdfData.size:(ex?ex.pdfSize:null)});
+  const pendingTxt=document.getElementById('ano').value.trim();
+  if(pendingTxt){if(!window._pendingNotes)window._pendingNotes=[];window._pendingNotes.push({ts:Date.now(),text:pendingTxt});}
+  const mergedNotes=allNotes();
+  const newFields={role,url:document.getElementById('au').value.trim(),date:document.getElementById('ad').value,status:document.getElementById('as').value,notes:mergedNotes};
+  if(editAppId){
+    const i=co.apps.findIndex(x=>x.id===editAppId);if(i===-1)return;
+    const old=co.apps[i];
+    const FMAP={role:'Role',url:'Job URL',date:'Date',status:'Status',pdfName:'CV file'};
+    const changes=[];
+    const merged={...newFields,...getPdf(old)};
+    // Only compare scalar fields — never stringify notes array
+    Object.keys(FMAP).forEach(k=>{
+      const ov=String(old[k]||''), nv=String(merged[k]||'');
+      if(ov!==nv) changes.push(FMAP[k]+': "'+ov.slice(0,80)+'" → "'+nv.slice(0,80)+'"');
+    });
+    // Compare notes separately using structured comparison
+    const oldNotes=Array.isArray(old.notes)?old.notes:
+      (old.notes&&typeof old.notes==='string'&&old.notes.trim()?[{text:old.notes.trim()}]:[]);
+    const oldNC=oldNotes.length, newNC=mergedNotes.length;
+    if(newNC>oldNC){
+      mergedNotes.slice(oldNC).forEach(n=>{
+        const preview=n.text.slice(0,80)+(n.text.length>80?'…':'');
+        changes.push('Note added: "'+preview+'"');
+      });
+    } else if(newNC<oldNC){
+      changes.push('Removed '+(oldNC-newNC)+' note'+(oldNC-newNC>1?'s':''));
+    } else if(newNC===oldNC&&newNC>0){
+      let edited=false;
+      for(let i=0;i<newNC;i++){
+        if((oldNotes[i]||{}).text!==mergedNotes[i].text){edited=true;break;}
+      }
+      if(edited) changes.push('Note edited');
+    }
+    const cl=[...(old.changelog||[])];
+    if(changes.length)cl.push({ts:Date.now(),changes});
+    co.apps[i]={...old,...merged,changelog:cl};
+    toast('Application saved.');window._apModalSnapshot=null;window._editingNoteIdx=undefined;
+  } else {
+    co.apps.push({id:nextId(co.apps),...newFields,...getPdf(null),changelog:[{ts:Date.now(),changes:['Created']}]});
+    openRows.add(editAppCoId);toast('Application added.');window._apModalSnapshot=null;window._editingNoteIdx=undefined;
+  }
+  await persist();closeModal('ap-modal');window._apModalSnapshot=null;window._editingNoteIdx=undefined;renderCos();renderAppsView();rebuildApCoFilter();
+}
+
+async function delApp(coId,appId){const co=data.find(x=>x.id==coId);const a=co&&co.apps.find(x=>x.id==appId);if(!a||!confirm('Delete application for "'+a.role+'"?'))return;co.apps=co.apps.filter(x=>x.id!==appId);await persist();renderCos();renderAppsView();toast('Deleted.');}
+
+function hasUnsavedChanges(){
+  if(!window._apModalSnapshot) return false;
+  const snap=window._apModalSnapshot;
+  // Field changes
+  const cur={
+    role:(document.getElementById('ar')||{}).value||'',
+    url:(document.getElementById('au')||{}).value||'',
+    date:(document.getElementById('ad')||{}).value||'',
+    status:(document.getElementById('as')||{}).value||''
+  };
+  if(Object.keys(cur).some(k=>cur[k]!==snap[k])) return true;
+  // PDF change
+  const snapPdfName=snap.pdfName||'';
+  const curPdfName=pendingPdfData?pendingPdfData.name:(window._existingNotes!==undefined?(window._apModalSnapshot.pdfName||''):'');
+  if((pendingPdfData?pendingPdfData.name:'')!==snapPdfName) return true;
+  // Text typed in note field but not yet added
+  const typedNote=((document.getElementById('ano')||{}).value||'').trim();
+  if(typedNote.length>0) return true;
+  // Notes added via Add button
+  if((window._pendingNotes||[]).length>0) return true;
+  // Notes edited or deleted (compare to snapshot)
+  const curNotes=JSON.stringify((window._existingNotes||[]).map(n=>({ts:n.ts,text:n.text})));
+  if(curNotes!==snap.notesJSON) return true;
+  // Inline edit textarea open
+  if(window._editingNoteIdx!==undefined) return true;
+  return false;
+}
+function closeApModal(){
+  if(hasUnsavedChanges()){
+    if(!confirm('You have unsaved changes. Close without saving?'))return;
+    // Restore notes to original state before closing
+    if(window._apModalSnapshot&&window._apModalSnapshot.notesJSON){
+      window._existingNotes=JSON.parse(window._apModalSnapshot.notesJSON);
+    }
+  }
+  window._editingNoteIdx=undefined;
+  window._pendingNotes=[];
+  window._apModalSnapshot=null;
+  closeModal('ap-modal');
+}
+function bgCloseAp(e){
+  if(e.target===document.getElementById('ap-modal'))closeApModal();
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function bgClose(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeApModal();['co-modal','notes-modal'].forEach(closeModal);}});
+
+openDB().then(async()=>{await loadData();initFilters();renderCos();updateExportInfo();}).catch(()=>{data=DEFAULT.map(d=>({...d,apps:[]}));initFilters();renderCos();updateExportInfo();toast('IndexedDB unavailable.');});
+</script>
+</body>
+</html>
