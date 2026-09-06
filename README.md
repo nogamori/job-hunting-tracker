@@ -2,6 +2,8 @@
 
 A self-contained, single-file web app to track job applications across companies, agencies, and job platforms — with no installation, no server, and no account required.
 
+![Companies view](assets/01.screenshot-companies.png)
+
 ---
 
 ## Features
@@ -16,6 +18,14 @@ A self-contained, single-file web app to track job applications across companies
 - Custom tiers and application statuses via Settings
 - Automatic dark mode (follows OS preference)
 - Export and import all data as a single JSON backup file
+
+![Applications view](assets/03.screenshot-applications.png)
+
+![Edit application](assets/04.screenshot-edit-application.png)
+
+![Add company](assets/02.screenshot-add-company.png)
+
+---
 
 ## How it works
 
