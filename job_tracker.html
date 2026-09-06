@@ -33,11 +33,18 @@
   --gray-bg:#2a2a24;--sh:0 1px 3px rgba(0,0,0,.3),0 0 0 .5px rgba(255,255,255,.06)
 }}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;line-height:1.5;background:var(--bg);color:var(--text);min-height:100vh}
-.app{max-width:1500px;margin:0 auto;padding:1.75rem 1.5rem}
+.app{max-width:1500px;margin:0 auto;padding:0 1.5rem;display:flex;flex-direction:column}
+#scroll-root{height:100vh;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable}
+.app-header{background:var(--bg);padding:1.5rem 0 0;position:sticky;top:0;z-index:20}
+.app-header-inner{max-width:1500px;margin:0 auto;padding:0 1.5rem}
+.app-content{display:flex;flex-direction:column}
 .nav{display:flex;gap:4px;margin-bottom:1.5rem;border-bottom:.5px solid var(--border)}
 .nav-btn{background:none;border:none;border-bottom:2.5px solid transparent;border-radius:0;color:var(--text-2);cursor:pointer;font-size:13px;font-weight:500;padding:8px 16px;margin-bottom:-1px;transition:color .12s,border-color .12s}
 .nav-btn:hover{background:none;color:var(--text)}.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
-.view{display:none!important}.view.active{display:block!important}
+.view{display:none!important}.view.active{display:flex!important;flex-direction:column}
+#view-companies.active,#view-applications.active{padding-top:1rem;padding-bottom:1rem}
+#view-howto.active,#view-settings.active{padding:1rem 0 3rem;display:block!important}
+#view-companies .table-wrap,#view-applications .table-wrap{overflow-y:auto}
 .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
 .header h1{font-size:19px;font-weight:600;letter-spacing:-.3px}
 .header-sub{font-size:12px;color:var(--text-3);margin-top:2px}
@@ -51,7 +58,7 @@ input[type=text],input[type=url],input[type=date]{width:100%}
 button{background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--radius);color:var(--text);cursor:pointer;font-family:inherit;font-size:12px;padding:5px 11px;transition:background .12s,opacity .12s;white-space:nowrap}
 button:hover{background:var(--surface-1)}button:active{opacity:.8}
 .bp{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}.bp:hover{opacity:.88;background:var(--accent)}
-.bd{color:var(--danger);border-color:transparent;background:transparent;padding:3px 7px;font-size:11px}.bd:hover{background:var(--danger-bg)}
+.bd{color:var(--danger);border-color:var(--danger);background:transparent;padding:3px 7px;font-size:11px}.bd:hover{background:var(--danger-bg)}
 .bs{padding:3px 9px;font-size:11px}
 .filters{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:flex-start}
 .fl{font-size:11px;color:var(--text-3);margin-right:2px;padding-top:7px}
@@ -72,13 +79,13 @@ button:hover{background:var(--surface-1)}button:active{opacity:.8}
 .pill strong{color:var(--text);font-weight:600}
 .table-wrap{background:var(--surface);border-radius:11px;border:.5px solid var(--border);box-shadow:var(--sh);overflow:auto}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
-th{background:var(--surface-1);border-bottom:.5px solid var(--border);color:var(--text-2);font-size:10.5px;font-weight:600;letter-spacing:.4px;padding:9px 10px;text-align:left;text-transform:uppercase;position:relative;user-select:none;white-space:nowrap;overflow:hidden}
+th{background:var(--surface-1);box-shadow:inset 0 -0.5px 0 var(--border);color:var(--text-2);font-size:10.5px;font-weight:600;letter-spacing:.4px;padding:9px 10px;text-align:left;text-transform:uppercase;position:sticky;top:0;z-index:2;user-select:none;white-space:nowrap;overflow:hidden}
 th.sortable{cursor:pointer}th.sortable:hover{color:var(--text)}
 .sarr{margin-left:3px;font-size:9px;opacity:.4}.sorted .sarr{color:var(--accent);opacity:1}
 td{border-bottom:.5px solid var(--border);padding:8px 10px;vertical-align:middle;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr:last-child td{border-bottom:none}
 tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparent)}
-.resizer{position:absolute;right:0;top:0;width:6px;height:100%;cursor:col-resize;z-index:2;background:transparent;transition:background .15s}
+.resizer{position:absolute;right:0;top:0;width:6px;height:100%;cursor:col-resize;z-index:3;background:transparent;transition:background .15s}
 .resizer:hover,.resizer.dragging{background:var(--accent)}
 .expand-btn{background:none;border:.5px solid var(--border);border-radius:4px;color:var(--text-3);cursor:pointer;font-size:10px;padding:1px 5px;line-height:1.4;transition:all .12s}
 .expand-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
@@ -90,7 +97,7 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
 .apps-header{display:flex;align-items:center;gap:12px;margin-bottom:.7rem;flex-wrap:wrap}
 .apps-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.4px}
 .apps-table{width:100%;border-collapse:collapse;font-size:11.5px}
-.apps-table th{background:transparent;font-size:10px;color:var(--text-3);font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:4px 8px;border-bottom:.5px solid var(--border);position:static}
+.apps-table th{background:var(--surface-1);font-size:10px;color:var(--text-3);font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:4px 8px;border-bottom:.5px solid var(--border);position:sticky;top:0;z-index:1}
 .apps-table td{padding:6px 8px;border-bottom:.5px solid var(--border);color:var(--text);vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 .apps-table tr:last-child td{border-bottom:none}
 .apps-table tr:hover td{background:color-mix(in srgb,var(--accent) 4%,transparent)}
@@ -164,25 +171,37 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
 </style>
 </head>
 <body>
-<div class="app">
-<div class="nav">
-  <button class="nav-btn active" onclick="switchView('companies')">Companies</button>
-  <button class="nav-btn" onclick="switchView('applications')">Applications</button>
-  <button class="nav-btn" onclick="switchView('howto')">How to use</button>
-</div>
-
-<!-- COMPANIES VIEW -->
-<div class="view active" id="view-companies">
-<div class="header">
-  <div><h1>Job Tracker</h1><div class="header-sub">Companies &amp; applications &middot; Gregório Amorim &middot; Barcelona &amp; EMEA</div></div>
-  <div class="hctrls">
-    <input class="si" type="text" id="co-search" placeholder="Search companies&hellip;" oninput="renderCos()">
+<div id="scroll-root">
+<div class="app-header" id="app-header">
+<div class="app-header-inner">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+  <div>
+    <div style="font-size:17px;font-weight:700;letter-spacing:-.3px">Job Tracker</div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:1px;text-align:center">by <a href="https://github.com/nogamori/job-hunting-tracker" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">nogamori</a></div>
+  </div>
+  <div class="hctrls" id="global-ctrls">
     <span class="export-info" id="export-info">Never exported</span>
     <button onclick="exportJSON()">Export</button>
     <button onclick="document.getElementById('imp').click()">Import</button>
     <input type="file" id="imp" accept=".json" style="display:none" onchange="importJSON(event)">
-    <button class="bp" onclick="openCo(null)">+ Add company</button>
+    <button class="bp" id="btn-add-company" onclick="openCo(null)" style="display:none">+ Add company</button>
+    <button class="bp" id="btn-add-application" onclick="openAppGlobal()" style="display:none">+ Add application</button>
   </div>
+</div>
+<div class="nav">
+  <button class="nav-btn active" onclick="switchView('companies')">Companies</button>
+  <button class="nav-btn" onclick="switchView('applications')">Applications</button>
+  <button class="nav-btn" onclick="switchView('howto')">How to use</button>
+  <button class="nav-btn" onclick="switchView('settings')">Settings</button>
+</div>
+</div>
+</div>
+<div class="app" id="app-content">
+
+<!-- COMPANIES VIEW -->
+<div class="view active" id="view-companies">
+<div style="margin-bottom:1rem">
+  <input class="si" type="text" id="co-search" placeholder="Search companies&hellip;" oninput="renderCos()" style="width:100%;max-width:300px">
 </div>
 <div class="filters">
   <span class="fl">Filter:</span>
@@ -194,14 +213,13 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
 </div>
 <div class="stats" id="co-stats"></div>
 <div class="table-wrap"><table><thead id="co-thead"></thead><tbody id="co-tbody"></tbody></table></div>
-<div class="disclaimer"><strong>Tier classification</strong>Tiers reflect confirmed presence in Barcelona or remote EMEA hiring, historical frequency of commercial role openings, and fit with the candidate profile (B2B SaaS, corporate decision-maker sales cycle, Portuguese or EMEA market). Classification is dynamic. Agencies and platforms are classified by type, not tier. Links verified August 2026.</div>
+
 </div>
 
 <!-- APPLICATIONS VIEW -->
 <div class="view" id="view-applications">
-<div class="header">
-  <div><h1>Applications</h1><div class="header-sub">All applications across companies</div></div>
-  <div class="hctrls"><input class="si" type="text" id="ap-search" placeholder="Search&hellip;" oninput="renderAppsView()"></div>
+<div style="margin-bottom:1rem">
+  <input class="si" type="text" id="ap-search" placeholder="Search applications&hellip;" oninput="renderAppsView()">
 </div>
 <div class="filters">
   <span class="fl">Filter:</span>
@@ -213,92 +231,224 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
 <div class="table-wrap"><table><thead id="ap-thead"></thead><tbody id="ap-tbody"></tbody></table></div>
 </div>
 
-</div>
-
-
 <!-- HOW TO USE VIEW -->
 <div class="view" id="view-howto">
-<div style="max-width:760px;padding:2rem 0">
-  <h1 style="font-size:22px;font-weight:700;margin-bottom:.35rem">Job Tracker</h1>
-  <p style="font-size:13px;color:var(--text-2);margin-bottom:2rem">A free, browser-based job application tracker built with AI.</p>
+<div>
 
-  <div style="display:flex;flex-direction:column;gap:1.75rem">
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Features</h2>
+    <ul style="font-size:13px;line-height:2.1;color:var(--text-2);list-style:none;padding:0">
+      <li>&#10003;&nbsp; Track companies, agencies and platforms in one place</li>
+      <li>&#10003;&nbsp; Log job applications with status, CV file (PDF stored as base64) and notes</li>
+      <li>&#10003;&nbsp; Multi-entry timestamped notes per application</li>
+      <li>&#10003;&nbsp; Full change log for every application edit</li>
+      <li>&#10003;&nbsp; Import applications via JSON (partial updates supported)</li>
+      <li>&#10003;&nbsp; Bulk import companies via JSON</li>
+      <li>&#10003;&nbsp; Filter and sort by tier, type, status, and more</li>
+      <li>&#10003;&nbsp; Export and import all data as a single JSON backup file</li>
+    </ul>
+  </section>
 
-    <section>
-      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">About</h2>
-      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">This tool was created using artificial intelligence by <a href="https://github.com/nogamori" target="_blank" rel="noopener" style="color:var(--accent)">nogamori</a>. It is open source, completely free to use, and runs entirely in your browser — no servers, no accounts, no subscriptions.</p>
-    </section>
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">How to use</h2>
+    <ol style="font-size:13px;line-height:2.1;color:var(--text-2);padding-left:1.25rem">
+      <li>Download <code style="background:var(--gray-bg);border-radius:3px;padding:1px 5px;font-size:12px">job_tracker.html</code> and open it in your browser.</li>
+      <li>Add companies using <strong>+ Add company</strong> or import them in bulk via <strong>Import</strong>.</li>
+      <li>When you apply to a role, click <strong>+</strong> next to the company to log the application.</li>
+      <li>Update status and add notes as the process evolves.</li>
+      <li>Use the <strong>Applications</strong> tab for a full view across all companies.</li>
+      <li>Export your data regularly using the <strong>Export</strong> button &mdash; your data lives in the browser, not in the HTML file.</li>
+    </ol>
+  </section>
 
-    <section>
-      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">Features</h2>
-      <ul style="font-size:13px;line-height:2;color:var(--text-2);list-style:none;padding:0">
-        <li>&#10003;&nbsp; Track companies and job applications in one place</li>
-        <li>&#10003;&nbsp; Store CV files (PDF) alongside each application</li>
-        <li>&#10003;&nbsp; Multi-entry notes with timestamps per application</li>
-        <li>&#10003;&nbsp; Full change log for every application edit</li>
-        <li>&#10003;&nbsp; Import applications via JSON (partial updates supported)</li>
-        <li>&#10003;&nbsp; Filter and sort by tier, type, status, and more</li>
-        <li>&#10003;&nbsp; Export and import all data as a single JSON file</li>
-      </ul>
-    </section>
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Data &amp; Privacy</h2>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2)">All data is stored locally in your browser using <strong>IndexedDB</strong>. Nothing is sent to any server. Your data stays on your machine.</p>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2);margin-top:.6rem"><strong>Important:</strong> IndexedDB data is tied to your browser and device. Clearing browser data, switching browsers, or changing computers will erase it. Use the <strong>Export</strong> button regularly to keep a JSON backup alongside the HTML file. To restore, click <strong>Import</strong> and select your backup.</p>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2);margin-top:.6rem"><strong>CV files</strong> are stored as base64-encoded strings inside the JSON backup. This means the backup file can become large if you attach many PDFs. If the file gets too large, consider removing old CV attachments from closed applications.</p>
+  </section>
 
-    <section>
-      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">How to use</h2>
-      <ol style="font-size:13px;line-height:2;color:var(--text-2);padding-left:1.25rem">
-        <li>Download <code style="background:var(--gray-bg);border-radius:3px;padding:1px 5px">job_tracker.html</code> and open it in your browser.</li>
-        <li>Add companies you want to track using <strong>+ Add company</strong>.</li>
-        <li>When you apply to a role, click <strong>+</strong> next to the company to log the application.</li>
-        <li>Update the application status as the process evolves.</li>
-        <li>Use the <strong>Applications</strong> tab for a full view across all companies.</li>
-        <li>Export your data regularly using the <strong>Export</strong> button.</li>
-      </ol>
-    </section>
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Import formats</h2>
 
-    <section>
-      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">Data &amp; Privacy</h2>
-      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">All data is stored locally in your browser using <strong>IndexedDB</strong> — a built-in browser database. Nothing is sent to any server. Your data stays on your machine.</p>
-      <p style="font-size:13px;line-height:1.7;color:var(--text-2);margin-top:.65rem"><strong>Important:</strong> data stored in IndexedDB is tied to the browser and device you are using. If you clear your browser data, use a different browser, or switch computers, your data will not be there. To avoid losing your data, export a JSON backup regularly using the <strong>Export</strong> button and keep it alongside the HTML file.</p>
-      <p style="font-size:13px;line-height:1.7;color:var(--text-2);margin-top:.65rem">To restore data on a new device or browser: open the HTML file, click <strong>Import</strong>, and select your JSON backup.</p>
-    </section>
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:.6rem"><strong>Companies / Agencies / Platforms</strong> &mdash; via the <strong>Import</strong> button. Expects a JSON array. You can include applications inside each company using the <code style="background:var(--gray-bg);border-radius:3px;padding:1px 5px;font-size:12px">apps</code> field:</p>
 
-    <section>
-      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">Built with</h2>
-      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">HTML &middot; CSS &middot; Vanilla JavaScript &middot; IndexedDB &middot; <a href="https://claude.ai" target="_blank" rel="noopener" style="color:var(--accent)">Claude AI</a> (Anthropic)</p>
-    </section>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:.75rem;table-layout:fixed">
+      <thead><tr style="background:var(--surface-1)">
+        <th style="padding:6px 10px;text-align:left;border:.5px solid var(--border);color:var(--text-2);font-weight:600;width:15%">Field</th>
+        <th style="padding:6px 10px;text-align:left;border:.5px solid var(--border);color:var(--text-2);font-weight:600;width:12%">Required</th>
+        <th style="padding:6px 10px;text-align:left;border:.5px solid var(--border);color:var(--text-2);font-weight:600;width:73%">Description</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>name</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Yes</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Company, agency, or platform name</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>tier</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Priority level. See valid values below</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>type</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>Company</code>, <code>Agency</code>, or <code>Platform</code></td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>url</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Yes</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Main website URL of the company (e.g. <code>https://company.com</code>). Used for the favicon icon and the clickable company name in the table</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>site</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Careers page URL (e.g. <code>https://company.com/careers</code>)</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>linkedin</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">LinkedIn Jobs page URL (e.g. <code>https://linkedin.com/company/slug/jobs/</code>)</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>notes</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Free text notes about the company</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>apps</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Array of applications (see application fields below)</td></tr>
+      </tbody>
+    </table>
 
-    <section>
-      <h2 style="font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:.75rem">License</h2>
-      <p style="font-size:13px;line-height:1.7;color:var(--text-2)">MIT License — free to use, modify, and distribute.</p>
-    </section>
+    <p style="font-size:12px;color:var(--text-3);margin-bottom:1rem" id="howto-tier-valid"><!-- dynamic --></p>
 
-  </div>
+    <pre style="background:var(--gray-bg);border-radius:var(--radius);padding:.85rem 1rem;font-size:11.5px;overflow-x:auto;color:var(--text-2);line-height:1.6;white-space:pre">[
+  {
+    "name": "Acme Corp",
+    "tier": "1",
+    "type": "Company",
+    "url": "https://acmecorp.com",
+    "site": "https://acmecorp.com/careers",
+    "linkedin": "https://linkedin.com/company/acmecorp/jobs/",
+    "notes": "Series B fintech, hiring commercial roles.",
+    "apps": [
+      {
+        "role": "Account Executive",
+        "url": "https://acmecorp.com/careers/ae",
+        "date": "2026-09-01",
+        "status": "applied",
+        "notes": "Applied via company site."
+      }
+    ]
+  }
+]</pre>
+
+    <p style="font-size:13px;color:var(--text-2);margin-top:1.5rem;margin-bottom:.6rem"><strong>Applications</strong> &mdash; via the <strong>Paste JSON</strong> tab inside the application modal. Open or create an application, switch to the Paste JSON tab, and paste. Only fields present in the JSON are updated; existing fields are preserved:</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:.75rem;table-layout:fixed">
+      <thead><tr style="background:var(--surface-1)">
+        <th style="padding:6px 10px;text-align:left;border:.5px solid var(--border);color:var(--text-2);font-weight:600;width:15%">Field</th>
+        <th style="padding:6px 10px;text-align:left;border:.5px solid var(--border);color:var(--text-2);font-weight:600;width:12%">Required</th>
+        <th style="padding:6px 10px;text-align:left;border:.5px solid var(--border);color:var(--text-2);font-weight:600;width:73%">Description</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>role</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">New only</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Job title / position name. Required only when creating a new application</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>url</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Direct link to the job posting</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>date</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Date applied, in <code>YYYY-MM-DD</code> format (e.g. <code>2026-09-01</code>)</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>status</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Application status. See valid values below</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>notes</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Text note to add. If <code>ts</code> is omitted, the current timestamp is used automatically</td></tr>
+        <tr><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal"><code>ts</code></td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">No</td><td style="padding:6px 10px;border:.5px solid var(--border);word-wrap:break-word;white-space:normal">Unix timestamp in milliseconds for the note (e.g. <code>1756742400000</code>). Defaults to import time if omitted</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:12px;color:var(--text-3);margin-bottom:.5rem" id="howto-status-valid"><!-- dynamic --></p>
+
+    <pre style="background:var(--gray-bg);border-radius:var(--radius);padding:.85rem 1rem;font-size:11.5px;overflow-x:auto;color:var(--text-2);line-height:1.6;white-space:pre">{
+  "role": "SDR",
+  "url": "https://acmecorp.com/careers/sdr",
+  "date": "2026-09-01",
+  "status": "applied",
+  "notes": "Applied via company site. Recruiter: Jane Smith."
+}</pre>
+  </section>
+
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Suggestion on how to bulk import companies</h2>
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:.75rem">Use the following prompt with any AI assistant to generate a JSON file ready to import. Replace the values in brackets with your own criteria:</p>
+    <pre id="howto-prompt-companies" style="background:var(--gray-bg);border-radius:var(--radius);padding:.85rem 1rem;font-size:11.5px;overflow-x:auto;color:var(--text-2);line-height:1.7;white-space:pre-wrap"><!-- dynamic --></pre>
+  </section>
+
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Suggestion on how to bulk import agencies &amp; platforms</h2>
+    <p style="font-size:13px;color:var(--text-2);margin-bottom:.75rem">Use this prompt to find recruitment agencies and job platforms relevant to your search:</p>
+    <pre id="howto-prompt-agencies" style="background:var(--gray-bg);border-radius:var(--radius);padding:.85rem 1rem;font-size:11.5px;overflow-x:auto;color:var(--text-2);line-height:1.7;white-space:pre-wrap"><!-- dynamic --></pre>
+  </section>
+
+  <section style="margin-bottom:1.75rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Customization &amp; contributions</h2>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2)">Have a suggestion or found a bug? Open an issue on GitHub: <a href="https://github.com/nogamori/job-hunting-tracker/issues" target="_blank" rel="noopener" style="color:var(--accent)">github.com/nogamori/job-hunting-tracker/issues</a></p>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2);margin-top:.6rem">Want to modify it yourself? Upload the <code style="background:var(--gray-bg);border-radius:3px;padding:1px 5px;font-size:12px">job_tracker.html</code> file to any AI assistant (Claude, ChatGPT, etc.) and describe the changes you want. The entire tool is contained in a single HTML file.</p>
+  </section>
+
+
+
 </div>
 </div>
 
+
+<!-- SETTINGS VIEW -->
+<div class="view" id="view-settings">
+<div>
+
+  <section style="margin-bottom:2rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">About</h2>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2)">Job Tracker &mdash; <span style="color:var(--text-3)">v1.0.0-beta</span></p>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2)">Created by nogamori &middot; <a href="https://github.com/nogamori/job-hunting-tracker" target="_blank" rel="noopener" style="color:var(--accent)">github.com/nogamori/job-hunting-tracker</a></p>
+    <p style="font-size:12px;color:var(--text-3);margin-top:.35rem">MIT License &mdash; HTML &middot; CSS &middot; Vanilla JS &middot; IndexedDB &middot; Claude AI by Anthropic</p>
+  </section>
+
+  <section style="margin-bottom:2rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.4rem">Tier options</h2>
+    <p style="font-size:12px;color:var(--text-2);margin-bottom:.75rem">Fixed tiers cannot be removed. Add custom tiers for agencies, platforms, or any other category you need.</p>
+    <div id="settings-tiers" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.75rem"></div>
+    <div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:11px;color:var(--text-2)">Label</label>
+        <input type="text" id="new-tier-input" placeholder="e.g. Recruiting Agency" style="width:180px" oninput="autoSuggestTierValue(this)">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:11px;color:var(--text-2)">Value <span style="color:var(--text-3)">(for JSON/API)</span></label>
+        <input type="text" id="new-tier-value" placeholder="e.g. recruitingagency" style="width:180px">
+      </div>
+      <button class="bs bp" onclick="addCustomTier()">+ Add tier</button>
+    </div>
+  </section>
+
+  <section style="margin-bottom:2rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.4rem">Application status options</h2>
+    <p style="font-size:12px;color:var(--text-2);margin-bottom:.75rem">Fixed statuses cannot be removed. Add custom statuses as needed. The value is used internally and in JSON imports.</p>
+    <div id="settings-statuses" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.75rem"></div>
+    <div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:11px;color:var(--text-2)">Label</label>
+        <input type="text" id="new-status-label" placeholder="e.g. HR Screen" style="width:160px" oninput="autoSuggestValue(this)">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:11px;color:var(--text-2)">Value <span style="color:var(--text-3)">(for JSON/API)</span></label>
+        <input type="text" id="new-status-value" placeholder="e.g. hrscreen" style="width:160px">
+      </div>
+      <button class="bs bp" onclick="addCustomStatus()">+ Add status</button>
+    </div>
+  </section>
+
+  <section style="margin-bottom:2rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Customization &amp; contributions</h2>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2)">Have a suggestion or found a bug? Open an issue on GitHub: <a href="https://github.com/nogamori/job-hunting-tracker/issues" target="_blank" rel="noopener" style="color:var(--accent)">github.com/nogamori/job-hunting-tracker/issues</a></p>
+    <p style="font-size:13px;line-height:1.75;color:var(--text-2);margin-top:.6rem">Want to modify it yourself? Upload the <code style="background:var(--gray-bg);border-radius:3px;padding:1px 5px;font-size:12px">job_tracker.html</code> file to any AI assistant (Claude, ChatGPT, etc.) and describe the changes you want.</p>
+  </section>
+
+  <section style="margin-bottom:2rem">
+    <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);margin-bottom:.65rem">Data</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="exportJSON()">Export backup</button>
+      <button onclick="document.getElementById('imp').click()">Import backup</button>
+      <button class="bd" style="border:.5px solid var(--danger)" onclick="clearAllData()">Clear all data</button>
+    </div>
+    <p style="font-size:11px;color:var(--text-3);margin-top:.6rem">Clearing all data removes all companies, applications and settings from the browser. This cannot be undone. Export a backup first.</p>
+  </section>
+
+</div>
+</div>
 <!-- COMPANY MODAL -->
-<div class="backdrop" id="co-modal" onclick="bgClose(event,'co-modal')"><div class="modal">
+<div class="backdrop" id="co-modal"><div class="modal">
   <div class="mhead"><h2 id="co-title">Add company</h2><button class="cbtn" onclick="closeModal('co-modal')">&#215;</button></div>
   <div class="mbody"><div class="fg">
     <div class="ff full"><label>Company name *</label><input type="text" id="cn" placeholder="e.g. Airwallex"></div>
-    <div class="ff"><label>Tier *</label><select id="ct">
-      <option value="1">1 &mdash; Priority</option><option value="2" selected>2 &mdash; Active watch</option><option value="3">3 &mdash; On radar</option>
-      <option value="Ag&ecirc;ncia BCN">Agency BCN</option><option value="Ag&ecirc;ncia Fintech EMEA">Agency Fintech EMEA</option>
-      <option value="Ag&ecirc;ncia Payments Global">Agency Payments Global</option><option value="Platform Europa">Platform Europa</option>
-      <option value="Platform Europa/PT">Platform Europa/PT</option><option value="Platform Remote Tech">Platform Remote Tech</option>
-      <option value="Platform Startups">Platform Startups</option>
-    </select></div>
+    <div class="ff"><label>Tier *</label><select id="ct"><option value="1">1 — Priority</option><option value="2" selected>2 — Active watch</option><option value="3">3 — On radar</option><option value="Agency">Agency</option><option value="Platform">Platform</option></select></div>
     <div class="ff"><label>Type</label><select id="ctype">
-      <option value="Company" selected>Company</option><option value="Ag&ecirc;ncia">Agency</option><option value="Platform">Platform</option>
+      <option value="Company" selected>Company</option><option value="Agency">Agency</option><option value="Platform">Platform</option>
     </select></div>
-    <div class="ff full"><label>Careers page URL</label><input type="url" id="cs" placeholder="https://&hellip;"></div>
-    <div class="ff full"><label>LinkedIn Jobs URL</label><input type="url" id="cl" placeholder="https://linkedin.com/company/&hellip;/jobs/"></div>
+    <div class="ff full"><label>Main website URL *</label><input type="url" id="cu" placeholder="https://company.com"></div>
+    <div class="ff full"><label>Careers page URL <span style="font-weight:400;color:var(--text-3)">(optional)</span></label><input type="url" id="cs" placeholder="https://&hellip;"></div>
+    <div class="ff full"><label>LinkedIn Jobs URL <span style="font-weight:400;color:var(--text-3)">(optional)</span></label><input type="url" id="cl" placeholder="https://linkedin.com/company/&hellip;/jobs/"></div>
     <div class="ff full"><label>Notes</label><textarea id="cno" placeholder="Context, contacts, observations&hellip;"></textarea></div>
   </div></div>
   <div class="mfoot"><button onclick="closeModal('co-modal')">Cancel</button><button class="bp" onclick="saveCo()">Save company</button></div>
 </div></div>
 
 <!-- APPLICATION MODAL -->
-<div class="backdrop" id="ap-modal" onclick="bgCloseAp(event)"><div class="modal modal-wide">
+<div class="backdrop" id="ap-modal"><div class="modal modal-wide">
   <div class="mhead"><h2 id="ap-title">Add application</h2><button class="cbtn" onclick="closeApModal()">&#215;</button></div>
   <div class="mbody">
     <div class="tab-bar">
@@ -360,23 +510,39 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
 </div></div>
 
 <!-- NOTES MODAL -->
-<div class="backdrop" id="notes-modal" onclick="bgClose(event,'notes-modal')"><div class="modal">
+<div class="backdrop" id="notes-modal"><div class="modal">
   <div class="mhead"><h2 id="notes-title">Notes</h2><button class="cbtn" onclick="closeModal('notes-modal')">&#215;</button></div>
   <div class="mbody"><div class="notes-content" id="notes-body"></div></div>
   <div class="mfoot"><button onclick="closeModal('notes-modal')">Close</button></div>
 </div></div>
+
+</div><!-- /app-content -->
 
 <div class="toast" id="toast"></div>
 
 <script>
 const DB_NAME='ga_jt',DB_VER=1,ST='tracker',ST_M='meta';
 let db=null;
+async function importAndSave(){
+  const o=parseAndValidateJson();if(!o)return;
+  const VS=['applied','inprocess','offer','closed',...(customStatuses||[]).map(s=>s.value)];
+  if(o.role||o.position) document.getElementById('ar').value=o.role||o.position;
+  if(o.url) document.getElementById('au').value=normalizeUrl(o.url);
+  if(o.date) document.getElementById('ad').value=o.date;
+  if(o.status){const st=o.status.toLowerCase().trim();if(VS.includes(st))document.getElementById('as').value=st;}
+  if(o.notes&&o.notes.trim()){
+    if(!window._pendingNotes)window._pendingNotes=[];
+    window._pendingNotes.push({ts:o.ts||Date.now(),text:o.notes.trim()});
+  }
+  await saveApp();
+}
+
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(ST))d.createObjectStore(ST,{keyPath:'key'});if(!d.objectStoreNames.contains(ST_M))d.createObjectStore(ST_M,{keyPath:'key'});};r.onsuccess=e=>{db=e.target.result;res(db);};r.onerror=e=>rej(e);});}
 function dbGet(s,k){return new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).get(k);r.onsuccess=e=>res(e.target.result?e.target.result.value:null);r.onerror=e=>rej(e);});}
 function dbSet(s,k,v){return new Promise((res,rej)=>{const r=db.transaction(s,'readwrite').objectStore(s).put({key:k,value:v});r.onsuccess=()=>res();r.onerror=e=>rej(e);});}
 </script>
 <script id="data-script">
-const DEFAULT=[{id:1,name:'Revolut',tier:'1',type:'Company',site:'https://www.revolut.com/en-ES/careers/',li:'https://www.linkedin.com/company/revolut/jobs/',notes:'485 open positions.',apps:[]},{id:2,name:'Airwallex',tier:'1',type:'Company',site:'https://careers.airwallex.com/jobs/',li:'https://www.linkedin.com/company/airwallex/jobs/',notes:'Building Spain & Southern Europe commercial team from BCN.',apps:[]},{id:3,name:'Deel',tier:'1',type:'Company',site:'https://www.deel.com/careers/',li:'https://www.linkedin.com/company/deel/jobs/',notes:'BCN hub focused on multilingual SDRs for EMEA markets.',apps:[]},{id:4,name:'Remote',tier:'1',type:'Company',site:'https://remote.com/careers',li:'https://www.linkedin.com/company/remote.com/jobs/',notes:'',apps:[]},{id:5,name:'Factorial',tier:'1',type:'Company',site:'https://careers.factorialhr.com/#jobs',li:'https://www.linkedin.com/company/factorial-hr/jobs/',notes:'',apps:[]},{id:6,name:'Klarna',tier:'1',type:'Company',site:'https://www.klarna.com/careers/',li:'https://www.linkedin.com/company/klarna/jobs/',notes:'BCN hub at Passeig de Gracia.',apps:[]},{id:7,name:'Amenitiz',tier:'1',type:'Company',site:'https://amenitiz.com/en/careers#positions',li:'https://www.linkedin.com/company/amenitiz/jobs/',notes:"Partner's employer. Role on hold per Daniela Duque Romero.",apps:[]},{id:8,name:'Payhawk',tier:'2',type:'Company',site:'https://payhawk.com/careers#open-positions',li:'https://www.linkedin.com/company/payhawk/jobs/',notes:'BDR open in BCN.',apps:[]},{id:9,name:'Perk (TravelPerk)',tier:'2',type:'Company',site:'https://www.perk.com/careers/',li:'https://www.linkedin.com/company/travelperk/jobs/',notes:'',apps:[]},{id:10,name:'Navan',tier:'2',type:'Company',site:'https://navan.com/careers',li:'https://www.linkedin.com/company/navan/jobs/',notes:'First BCN office opening.',apps:[]},{id:11,name:'Qonto',tier:'2',type:'Company',site:'https://qonto.com/es/careers#jobs',li:'https://www.linkedin.com/company/qonto/jobs/',notes:'',apps:[]},{id:12,name:'Spendesk',tier:'2',type:'Company',site:'https://career.spendesk.com/jobs',li:'https://www.linkedin.com/company/spendesk/jobs/',notes:'',apps:[]},{id:13,name:'Kantox',tier:'2',type:'Company',site:'https://www.kantox.com/careers#job-openings',li:'https://www.linkedin.com/company/kantox/jobs/',notes:'FX hedging and international payments.',apps:[]},{id:14,name:'SumUp',tier:'2',type:'Company',site:'https://www.sumup.com/careers/',li:'https://www.linkedin.com/company/sumup/jobs/',notes:'',apps:[]},{id:15,name:'Finom',tier:'2',type:'Company',site:'https://jobs.eu.lever.co/pnlfin',li:'https://www.linkedin.com/company/finom-eu/jobs/',notes:'',apps:[]},{id:16,name:'Thunes',tier:'2',type:'Company',site:'https://www.thunes.com/jobs/',li:'https://www.linkedin.com/company/thunes/jobs/',notes:'Cross-border payments infrastructure.',apps:[]},{id:17,name:'EBANX',tier:'2',type:'Company',site:'https://job-boards.greenhouse.io/ebanx',li:'https://www.linkedin.com/company/ebanx/jobs/',notes:'Brazilian payments company.',apps:[]},{id:18,name:'Younited',tier:'2',type:'Company',site:'https://careers.younited-credit.com/',li:'https://www.linkedin.com/company/younited-credit/jobs/',notes:'Active in Portugal since 2018.',apps:[]},{id:19,name:'Nium',tier:'2',type:'Company',site:'https://jobs.lever.co/nium',li:'https://www.linkedin.com/company/nium-global/jobs/',notes:'',apps:[]},{id:20,name:'Abacum',tier:'2',type:'Company',site:'https://www.abacum.ai/company/careers',li:'https://www.linkedin.com/company/abacum-io/jobs/',notes:'FP&A SaaS, BCN. CFO-facing ICP.',apps:[]},{id:21,name:'PayRetailers',tier:'2',type:'Company',site:'https://payretailers.careers.hibob.com/jobs',li:'https://www.linkedin.com/company/payretailers/jobs/',notes:'',apps:[]},{id:22,name:'Yuno',tier:'2',type:'Company',site:'https://jobs.lever.co/yuno?location=Spain',li:'https://www.linkedin.com/company/yuno-payments/jobs/',notes:'',apps:[]},{id:23,name:'seQura',tier:'2',type:'Company',site:'https://sequra.recruitee.com/career-page-jobs',li:'https://www.linkedin.com/company/sequra/jobs/',notes:'',apps:[]},{id:24,name:'Canary Technologies',tier:'2',type:'Company',site:'https://jobs.lever.co/canarytechnologies',li:'https://www.linkedin.com/company/canary-technologies/jobs/',notes:'BCN office. Full-Cycle Sales Iberia open.',apps:[]},{id:25,name:'Personio',tier:'2',type:'Company',site:'https://www.personio.com/about-personio/careers/',li:'https://www.linkedin.com/company/personio/jobs/',notes:'BCN office at Passeig de Gracia.',apps:[]},{id:26,name:'Emburse',tier:'2',type:'Company',site:'https://www.emburse.com/company/careers',li:'https://www.linkedin.com/company/emburse/jobs/',notes:'AP automation + expense. BCN office.',apps:[]},{id:27,name:'Monei',tier:'3',type:'Company',site:'https://jobs.ashbyhq.com/monei',li:'https://www.linkedin.com/company/monei/jobs/',notes:'',apps:[]},{id:28,name:'NoviCap',tier:'3',type:'Company',site:'https://novicap.com/en/work-with-us/',li:'https://www.linkedin.com/company/novicap-fintech/jobs/',notes:'Supply chain finance. BCN.',apps:[]},{id:29,name:'Belvo',tier:'3',type:'Company',site:'https://belvo.com/careers/',li:'https://www.linkedin.com/company/belvo/jobs/',notes:'Open Banking API for LATAM.',apps:[]},{id:30,name:'Wipay',tier:'3',type:'Company',site:'https://wipay.es/trabaja-con-nosotros/',li:'https://www.linkedin.com/company/wipay-es/jobs/',notes:'',apps:[]},{id:31,name:'Neverless',tier:'3',type:'Company',site:'https://neverless.com/careers',li:'https://www.linkedin.com/company/neverless/jobs/',notes:'',apps:[]},{id:32,name:'Surfe',tier:'3',type:'Company',site:'https://www.surfe.com/careers',li:'https://www.linkedin.com/company/surfe-hq/jobs/',notes:'',apps:[]},{id:33,name:'Babel Profiles',tier:'Ag\u00eancia BCN',type:'Ag\u00eancia',site:'https://babelprofiles.com/job-vacancies-in-barcelona-and-beyond/',li:'https://www.linkedin.com/company/babel-profiles/jobs/',notes:'Boutique BCN agency. Register CV.',apps:[]},{id:34,name:'Talent Search People',tier:'Ag\u00eancia BCN',type:'Ag\u00eancia',site:'https://talentsearchpeople.com/en/looking-for-job/',li:'https://www.linkedin.com/company/talent-search-people/jobs/',notes:'',apps:[]},{id:35,name:'Storm2',tier:'Ag\u00eancia Fintech EMEA',type:'Ag\u00eancia',site:'https://storm2.com/jobs/',li:'https://www.linkedin.com/company/storm2/jobs/',notes:'Global fintech recruitment.',apps:[]},{id:36,name:'PaymentGenes',tier:'Ag\u00eancia Payments Global',type:'Ag\u00eancia',site:'https://www.paymentgenes.com/fintech-jobs',li:'https://www.linkedin.com/company/paymentgenes-recruitment/jobs/',notes:'Beril Yilmaz connected.',apps:[]},{id:37,name:'Welcome to the Jungle',tier:'Platform Europa',type:'Platform',site:'https://app.welcometothejungle.com/companies',li:'https://www.linkedin.com/company/welcome-to-the-jungle/jobs/',notes:'',apps:[]},{id:38,name:'Landing.Jobs',tier:'Platform Europa/PT',type:'Platform',site:'https://landing.jobs/jobs',li:'https://www.linkedin.com/company/landing-jobs/jobs/',notes:'Strong for lusophone markets.',apps:[]},{id:39,name:'Remotive',tier:'Platform Remote Tech',type:'Platform',site:'https://remotive.com/',li:'https://www.linkedin.com/company/remotive-io/jobs/',notes:'',apps:[]},{id:40,name:'Himalayas',tier:'Platform Remote Tech',type:'Platform',site:'https://himalayas.app/jobs',li:'https://www.linkedin.com/company/himalayas-app/jobs/',notes:'',apps:[]},{id:41,name:'Wellfound',tier:'Platform Startups',type:'Platform',site:'https://wellfound.com/jobs',li:'https://www.linkedin.com/company/wellfound/jobs/',notes:'Create candidate profile.',apps:[]}];
+const DEFAULT=[{id:1,name:'Revolut',tier:'1',type:'Company',site:'https://www.revolut.com/en-ES/careers/',linkedin:'https://www.linkedin.com/company/revolut/jobs/',notes:'485 open positions.',apps:[]},{id:2,name:'Airwallex',tier:'1',type:'Company',site:'https://careers.airwallex.com/jobs/',linkedin:'https://www.linkedin.com/company/airwallex/jobs/',notes:'Building Spain & Southern Europe commercial team from BCN.',apps:[]},{id:3,name:'Deel',tier:'1',type:'Company',site:'https://www.deel.com/careers/',linkedin:'https://www.linkedin.com/company/deel/jobs/',notes:'BCN hub focused on multilingual SDRs for EMEA markets.',apps:[]},{id:4,name:'Remote',tier:'1',type:'Company',site:'https://remote.com/careers',linkedin:'https://www.linkedin.com/company/remote.com/jobs/',notes:'',apps:[]},{id:5,name:'Factorial',tier:'1',type:'Company',site:'https://careers.factorialhr.com/#jobs',linkedin:'https://www.linkedin.com/company/factorial-hr/jobs/',notes:'',apps:[]},{id:6,name:'Klarna',tier:'1',type:'Company',site:'https://www.klarna.com/careers/',linkedin:'https://www.linkedin.com/company/klarna/jobs/',notes:'BCN hub at Passeig de Gracia.',apps:[]},{id:7,name:'Amenitiz',tier:'1',type:'Company',site:'https://amenitiz.com/en/careers#positions',linkedin:'https://www.linkedin.com/company/amenitiz/jobs/',notes:"Partner's employer. Role on hold per Daniela Duque Romero.",apps:[]},{id:8,name:'Payhawk',tier:'2',type:'Company',site:'https://payhawk.com/careers#open-positions',linkedin:'https://www.linkedin.com/company/payhawk/jobs/',notes:'BDR open in BCN.',apps:[]},{id:9,name:'Perk (TravelPerk)',tier:'2',type:'Company',site:'https://www.perk.com/careers/',linkedin:'https://www.linkedin.com/company/travelperk/jobs/',notes:'',apps:[]},{id:10,name:'Navan',tier:'2',type:'Company',site:'https://navan.com/careers',linkedin:'https://www.linkedin.com/company/navan/jobs/',notes:'First BCN office opening.',apps:[]},{id:11,name:'Qonto',tier:'2',type:'Company',site:'https://qonto.com/es/careers#jobs',linkedin:'https://www.linkedin.com/company/qonto/jobs/',notes:'',apps:[]},{id:12,name:'Spendesk',tier:'2',type:'Company',site:'https://career.spendesk.com/jobs',linkedin:'https://www.linkedin.com/company/spendesk/jobs/',notes:'',apps:[]},{id:13,name:'Kantox',tier:'2',type:'Company',site:'https://www.kantox.com/careers#job-openings',linkedin:'https://www.linkedin.com/company/kantox/jobs/',notes:'FX hedging and international payments.',apps:[]},{id:14,name:'SumUp',tier:'2',type:'Company',site:'https://www.sumup.com/careers/',linkedin:'https://www.linkedin.com/company/sumup/jobs/',notes:'',apps:[]},{id:15,name:'Finom',tier:'2',type:'Company',site:'https://jobs.eu.lever.co/pnlfin',linkedin:'https://www.linkedin.com/company/finom-eu/jobs/',notes:'',apps:[]},{id:16,name:'Thunes',tier:'2',type:'Company',site:'https://www.thunes.com/jobs/',linkedin:'https://www.linkedin.com/company/thunes/jobs/',notes:'Cross-border payments infrastructure.',apps:[]},{id:17,name:'EBANX',tier:'2',type:'Company',site:'https://job-boards.greenhouse.io/ebanx',linkedin:'https://www.linkedin.com/company/ebanx/jobs/',notes:'Brazilian payments company.',apps:[]},{id:18,name:'Younited',tier:'2',type:'Company',site:'https://careers.younited-credit.com/',linkedin:'https://www.linkedin.com/company/younited-credit/jobs/',notes:'Active in Portugal since 2018.',apps:[]},{id:19,name:'Nium',tier:'2',type:'Company',site:'https://jobs.lever.co/nium',linkedin:'https://www.linkedin.com/company/nium-global/jobs/',notes:'',apps:[]},{id:20,name:'Abacum',tier:'2',type:'Company',site:'https://www.abacum.ai/company/careers',linkedin:'https://www.linkedin.com/company/abacum-io/jobs/',notes:'FP&A SaaS, BCN. CFO-facing ICP.',apps:[]},{id:21,name:'PayRetailers',tier:'2',type:'Company',site:'https://payretailers.careers.hibob.com/jobs',linkedin:'https://www.linkedin.com/company/payretailers/jobs/',notes:'',apps:[]},{id:22,name:'Yuno',tier:'2',type:'Company',site:'https://jobs.lever.co/yuno?location=Spain',linkedin:'https://www.linkedin.com/company/yuno-payments/jobs/',notes:'',apps:[]},{id:23,name:'seQura',tier:'2',type:'Company',site:'https://sequra.recruitee.com/career-page-jobs',linkedin:'https://www.linkedin.com/company/sequra/jobs/',notes:'',apps:[]},{id:24,name:'Canary Technologies',tier:'2',type:'Company',site:'https://jobs.lever.co/canarytechnologies',linkedin:'https://www.linkedin.com/company/canary-technologies/jobs/',notes:'BCN office. Full-Cycle Sales Iberia open.',apps:[]},{id:25,name:'Personio',tier:'2',type:'Company',site:'https://www.personio.com/about-personio/careers/',linkedin:'https://www.linkedin.com/company/personio/jobs/',notes:'BCN office at Passeig de Gracia.',apps:[]},{id:26,name:'Emburse',tier:'2',type:'Company',site:'https://www.emburse.com/company/careers',linkedin:'https://www.linkedin.com/company/emburse/jobs/',notes:'AP automation + expense. BCN office.',apps:[]},{id:27,name:'Monei',tier:'3',type:'Company',site:'https://jobs.ashbyhq.com/monei',linkedin:'https://www.linkedin.com/company/monei/jobs/',notes:'',apps:[]},{id:28,name:'NoviCap',tier:'3',type:'Company',site:'https://novicap.com/en/work-with-us/',linkedin:'https://www.linkedin.com/company/novicap-fintech/jobs/',notes:'Supply chain finance. BCN.',apps:[]},{id:29,name:'Belvo',tier:'3',type:'Company',site:'https://belvo.com/careers/',linkedin:'https://www.linkedin.com/company/belvo/jobs/',notes:'Open Banking API for LATAM.',apps:[]},{id:30,name:'Wipay',tier:'3',type:'Company',site:'https://wipay.es/trabaja-con-nosotros/',linkedin:'https://www.linkedin.com/company/wipay-es/jobs/',notes:'',apps:[]},{id:31,name:'Neverless',tier:'3',type:'Company',site:'https://neverless.com/careers',linkedin:'https://www.linkedin.com/company/neverless/jobs/',notes:'',apps:[]},{id:32,name:'Surfe',tier:'3',type:'Company',site:'https://www.surfe.com/careers',linkedin:'https://www.linkedin.com/company/surfe-hq/jobs/',notes:'',apps:[]},{id:33,name:'Babel Profiles',tier:'Agency BCN',type:'Agency',site:'https://babelprofiles.com/job-vacancies-in-barcelona-and-beyond/',linkedin:'https://www.linkedin.com/company/babel-profiles/jobs/',notes:'Boutique BCN agency. Register CV.',apps:[]},{id:34,name:'Talent Search People',tier:'Agency BCN',type:'Agency',site:'https://talentsearchpeople.com/en/looking-for-job/',linkedin:'https://www.linkedin.com/company/talent-search-people/jobs/',notes:'',apps:[]},{id:35,name:'Storm2',tier:'Agency Fintech EMEA',type:'Agency',site:'https://storm2.com/jobs/',linkedin:'https://www.linkedin.com/company/storm2/jobs/',notes:'Global fintech recruitment.',apps:[]},{id:36,name:'PaymentGenes',tier:'Agency Payments Global',type:'Agency',site:'https://www.paymentgenes.com/fintech-jobs',linkedin:'https://www.linkedin.com/company/paymentgenes-recruitment/jobs/',notes:'Beril Yilmaz connected.',apps:[]},{id:37,name:'Welcome to the Jungle',tier:'Platform Europa',type:'Platform',site:'https://app.welcometothejungle.com/companies',linkedin:'https://www.linkedin.com/company/welcome-to-the-jungle/jobs/',notes:'',apps:[]},{id:38,name:'Landing.Jobs',tier:'Platform Europa/PT',type:'Platform',site:'https://landing.jobs/jobs',linkedin:'https://www.linkedin.com/company/landing-jobs/jobs/',notes:'Strong for lusophone markets.',apps:[]},{id:39,name:'Remotive',tier:'Platform Remote Tech',type:'Platform',site:'https://remotive.com/',linkedin:'https://www.linkedin.com/company/remotive-io/jobs/',notes:'',apps:[]},{id:40,name:'Himalayas',tier:'Platform Remote Tech',type:'Platform',site:'https://himalayas.app/jobs',linkedin:'https://www.linkedin.com/company/himalayas-app/jobs/',notes:'',apps:[]},{id:41,name:'Wellfound',tier:'Platform Startups',type:'Platform',site:'https://wellfound.com/jobs',linkedin:'https://www.linkedin.com/company/wellfound/jobs/',notes:'Create candidate profile.',apps:[]}];
 </script>
 <script>
 let data=[],openRows=new Set(),editCoId=null,editAppCoId=null,editAppId=null,pendingPdfData=null;
@@ -386,12 +552,28 @@ let sortCol='tier', sortAsc=true;
 let apSortCol='date', apSortAsc=false;
 
 async function loadData(){try{const s=await dbGet(ST,'companies');data=s?s:DEFAULT.map(d=>({...d,apps:d.apps||[]}));const c=await dbGet(ST_M,'cols');if(c&&c.length===colWidths.length)colWidths=c;}catch(e){data=DEFAULT.map(d=>({...d,apps:[]}));}}
-async function persist(){try{await dbSet(ST,'companies',data);}catch(e){toast('Warning: could not save.');}}
+async function persist(){
+  try{await dbSet(ST,'companies',data);showExportWarning();}
+  catch(e){toast('Warning: could not save.');}
+}
+function showExportWarning(){
+  try{
+    const el=document.getElementById('export-info');
+    if(!el)return;
+    el.textContent='Unsaved changes — export recommended';
+    el.className='export-info warn';
+  }catch(e){}
+}
 async function persistCols(){try{await dbSet(ST_M,'cols',colWidths);}catch(e){}}
 
-function updateExportInfo(){const el=document.getElementById('export-info');const ts=localStorage.getItem('ga_exp');if(!ts){el.textContent='Never exported';el.className='export-info warn';return;}const d=Math.floor((Date.now()-parseInt(ts))/86400000);el.textContent=d===0?'Exported today':d===1?'Exported yesterday':'Exported '+d+'d ago';el.className='export-info'+(d>7?' warn':'');}
+function updateExportInfo(){const el=document.getElementById('export-info');const ts=localStorage.getItem('ga_exp');if(!ts){el.textContent='Never exported';el.className='export-info warn';if(typeof adjustLayout==='function')requestAnimationFrame(adjustLayout);return;}const d=Math.floor((Date.now()-parseInt(ts))/86400000);el.textContent=d===0?'Exported today':d===1?'Exported yesterday':'Exported '+d+'d ago';el.className='export-info'+(d>7?' warn':'');if(typeof adjustLayout==='function')requestAnimationFrame(adjustLayout);}
 
-function exportJSON(){const b=new Blob([JSON.stringify({v:3,at:new Date().toISOString(),data},null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='job_tracker_data.json';a.click();URL.revokeObjectURL(u);localStorage.setItem('ga_exp',Date.now());updateExportInfo();toast('Exported.');}
+function exportJSON(){
+  const meta={customTiers,customStatuses};
+  const b=new Blob([JSON.stringify({v:4,at:new Date().toISOString(),meta,data},null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='job_tracker_data.json';a.click();URL.revokeObjectURL(u);
+  localStorage.setItem('ga_exp',Date.now());updateExportInfo();toast('Exported.');
+}
 function importJSON(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
@@ -400,8 +582,15 @@ function importJSON(e){
       const p=JSON.parse(ev.target.result);
       const imp=p.data||p;
       if(!Array.isArray(imp))throw new Error('Invalid format');
-      const isFullReplace=imp.length>0&&imp.every(d=>d.name);
-      // Check if this looks like a full export or a partial import
+      // If current data is empty, do full replace
+      if(data.length===0){
+        data=imp.map(d=>({...d,linkedin:d.linkedin||d.li||'',apps:(d.apps||[]).map(a=>({...a,notes:(a.notes||[]).map(n=>typeof n==='string'?{ts:Date.now(),text:n}:(n.ts?n:{...n,ts:Date.now()}))}))}));
+        if(p.meta){if(p.meta.customTiers)customTiers=p.meta.customTiers;if(p.meta.customStatuses)customStatuses=p.meta.customStatuses;await saveSettings();}
+        await persist();initFilters();renderCos();renderAppsView();renderSettingsView();
+        toast('Imported '+data.length+' companies.');
+        e.target.value='';return;
+      }
+      // Otherwise merge — skip duplicates
       const existingNames=new Set(data.map(d=>d.name.toLowerCase().trim()));
       const added=[],skipped=[];
       imp.forEach(d=>{
@@ -409,16 +598,16 @@ function importJSON(e){
         if(existingNames.has(d.name.toLowerCase().trim())){
           skipped.push(d.name);
         } else {
-          data.push({...d,id:nextId(data),apps:(d.apps||[]).map(a=>({...a}))});
+          data.push({...d,id:nextId(data),tier:d.tier||'3',type:d.type||'Company',url:d.url?normalizeUrl(d.url):'',linkedin:d.linkedin||d.li||'',apps:(d.apps||[]).filter(a=>a.role).map(a=>({...a,status:a.status||'applied',notes:(a.notes||[]).map(n=>typeof n==='string'?{ts:Date.now(),text:n}:(n.ts?n:{...n,ts:Date.now()}))}))});
           existingNames.add(d.name.toLowerCase().trim());
           added.push(d.name);
         }
       });
       await persist();initFilters();renderCos();renderAppsView();
-      let msg='Added '+added.length+' company'+(added.length!==1?'ies':'y')+'.';
-      if(skipped.length) msg+=' '+skipped.length+' duplicate'+(skipped.length!==1?'s':'')+' skipped ('+skipped.join(', ')+') — use Edit to update existing entries.';
+      let msg='Added '+added.length+' compan'+(added.length!==1?'ies':'y')+'.';
+      if(skipped.length) msg+=' '+skipped.length+' duplicate'+(skipped.length!==1?'s':'')+' skipped — use Edit to update existing entries.';
       toast(msg);
-    }catch(e){toast('Import failed — check the JSON file.');}
+    }catch(err){toast('Import failed — check the JSON file.');}
     e.target.value='';
   };
   r.readAsText(f);
@@ -428,17 +617,19 @@ function buildMs(cid,label,opts,sk,cb){const w=document.getElementById(cid);if(!
 function toggleDD(sk){const dd=document.getElementById('ms-dd-'+sk);const open=dd.classList.contains('open');document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open'));if(!open)dd.classList.add('open');}
 document.addEventListener('click',()=>document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open')));
 
-const TIERS=[{v:'1',l:'Tier 1'},{v:'2',l:'Tier 2'},{v:'3',l:'Tier 3'},{v:'Ag\u00eancia BCN',l:'Ag\u00eancia BCN'},{v:'Ag\u00eancia Fintech EMEA',l:'Ag\u00eancia Fintech EMEA'},{v:'Ag\u00eancia Payments Global',l:'Ag\u00eancia Payments Global'},{v:'Platform Europa',l:'Platform Europa'},{v:'Platform Europa/PT',l:'Platform Europa/PT'},{v:'Platform Remote Tech',l:'Platform Remote Tech'},{v:'Platform Startups',l:'Platform Startups'}];
-const TYPES=[{v:'Company',l:'Company'},{v:'Ag\u00eancia',l:'Ag\u00eancia'},{v:'Platform',l:'Platform'}];
+const TIERS=[{v:'1',l:'Tier 1'},{v:'2',l:'Tier 2'},{v:'3',l:'Tier 3'},{v:'Agency',l:'Agency'},{v:'Platform',l:'Platform'}];
+const TYPES=[{v:'Company',l:'Company'},{v:'Agency',l:'Agency'},{v:'Platform',l:'Platform'}];
 const STATUSES=[{v:'applied',l:'Applied'},{v:'inprocess',l:'In Process'},{v:'offer',l:'Offer'},{v:'closed',l:'Closed'},{v:'none',l:'No applications'}];
 const HASAPP=[{v:'yes',l:'Has applications'},{v:'no',l:'None yet'}];
 
 function initFilters(){
-  buildMs('ms-tier','Tier',TIERS,'tier',renderCos);
+  const allTiers=[...TIERS,...(customTiers||[]).map(t=>({v:t.value||t,l:t.label||t}))];
+  buildMs('ms-tier','Tier',allTiers,'tier',renderCos);
   buildMs('ms-type','Type',TYPES,'type',renderCos);
-  buildMs('ms-appstatus','App status',STATUSES,'appstatus',renderCos);
+  const allStatuses=[...STATUSES,...(customStatuses||[]).map(s=>({v:s.value,l:s.label}))];
+  buildMs('ms-appstatus','App status',allStatuses,'appstatus',renderCos);
   buildMs('ms-hasapp','Applications',HASAPP,'hasapp',renderCos);
-  const apSt=STATUSES.filter(s=>s.v!=='none');
+  const apSt=allStatuses.filter(s=>s.v!=='none');
   buildMs('ms-ap-status','Status',apSt,'apStatus',renderAppsView);
   rebuildApCoFilter();
 }
@@ -455,6 +646,20 @@ const SC={applied:'st-applied',inprocess:'st-screening',offer:'st-offer',closed:
 function sBadge(s){return '<span class="status '+(SC[s]||'st-applied')+'">'+(SL[s]||s)+'</span>';}
 function tBadge(t){const c=t==='1'?'t1':t==='2'?'t2':t==='3'?'t3':t.startsWith('Ag')?'tag':'tpl';const l=t==='1'?'Tier 1':t==='2'?'Tier 2':t==='3'?'Tier 3':t;return '<span class="tier-badge '+c+'">'+l+'</span>';}
 function lCell(url){if(!url)return '<span style="color:var(--text-3)">&#8212;</span>';let d='Link';try{d=new URL(url).hostname.replace('www.','').split('.').slice(0,2).join('.');}catch(e){}return '<a class="link-a" href="'+url+'" target="_blank" rel="noopener">'+d+' &#8599;</a>';}
+function faviconUrl(siteUrl,companyName){
+  const ATS_DOMAINS=['lever.co','greenhouse.io','ashbyhq.com','recruitee.com','hibob.com','workable.com','smartrecruiters.com','bamboohr.com','icims.com','taleo.net'];
+  try{
+    const u=new URL(siteUrl);
+    const h=u.hostname.replace('www.','');
+    const isATS=ATS_DOMAINS.some(d=>h===d||h.endsWith('.'+d));
+    if(isATS){
+      // Try to guess main domain from company name
+      const slug=companyName.toLowerCase().replace(/[^a-z0-9]/g,'');
+      return'https://www.google.com/s2/favicons?domain='+slug+'.com&sz=32';
+    }
+    return'https://www.google.com/s2/favicons?domain='+h+'&sz=32';
+  }catch(e){return'';}
+}
 function fmtDate(iso){if(!iso)return '&#8212;';const p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
 function fmtTs(ts){const d=new Date(ts);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
 function nextId(arr){return arr.length?Math.max(...arr.map(x=>x.id))+1:1;}
@@ -472,17 +677,27 @@ function renderCos(){
   const tot=data.reduce((s,d)=>s+(d.apps||[]).length,0);
   const act=data.reduce((s,d)=>s+(d.apps||[]).filter(a=>a.status!=='closed').length,0);
   document.getElementById('co-stats').innerHTML='<div class="pill"><strong>'+data.length+'</strong> companies</div><div class="pill"><strong>'+t1+'</strong> T1 &middot; <strong>'+t2+'</strong> T2 &middot; <strong>'+t3+'</strong> T3</div><div class="pill"><strong>'+tot+'</strong> applications &middot; <strong>'+act+'</strong> active</div><div class="pill"><strong>'+rows.length+'</strong> showing</div>';
-  if(!rows.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty"><div>&#128269;</div><p>No companies match.</p></div></td></tr>';return;}
+  if(!rows.length){
+    const emptyMsg=data.length===0
+      ?'<div style="font-size:28px;margin-bottom:.5rem">&#128188;</div><p style="font-weight:500;color:var(--text-2);margin-bottom:.35rem">No companies yet</p><p>Click <strong>+ Add company</strong> to add your first one, or use <strong>Import</strong> to load a JSON file. <a href="#" onclick="switchView(\'howto\')" style="color:var(--accent)">See import format</a></p>'
+      :'<div>&#128269;</div><p>No companies match these filters.</p>';
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty">'+emptyMsg+'</div></td></tr>';return;
+  }
   let html='';
   rows.forEach(d=>{
     const isOpen=openRows.has(d.id);
     const apps=d.apps||[];
-    html+='<tr class="company-row"><td style="text-align:center;padding:6px 4px"><button class="expand-btn'+(isOpen?' open':'')+'" onclick="toggleRow('+d.id+')">'+(isOpen?'&#8722;':'&#43;')+'</button></td>';
-    html+='<td><div class="name-cell"><span style="font-weight:500">'+d.name+'</span>'+aCnt(d)+'</div></td>';
+    const isAgencyOrPlatform=d.type==='Agency'||d.type==='Platform';
+    html+='<tr class="company-row"><td style="text-align:center;padding:6px 4px">'+(isAgencyOrPlatform?'<span style="width:24px;display:inline-block"></span>':'<button class="expand-btn'+(isOpen?' open':'')+'" onclick="toggleRow('+d.id+')">'+(isOpen?'&#8722;':'&#43;')+'</button>')+'</td>';
+    const fav=d.url?faviconUrl(d.url,d.name):(d.site?faviconUrl(d.site,d.name):'');
+    const favImg=fav?'<img src="'+fav+'" width="14" height="14" style="border-radius:2px;flex-shrink:0;margin-right:2px" onerror="this.style.display=\'none\'">':'<span style="width:14px;flex-shrink:0;display:inline-block"></span>';
+    let mainUrl=d.url||'';if(!mainUrl){try{if(d.site){const u=new URL(d.site);mainUrl=u.protocol+'//'+u.hostname;}}catch(e){}}
+    const nameEl=mainUrl?'<a href="'+mainUrl+'" target="_blank" rel="noopener" style="font-weight:500;color:inherit;text-decoration:none">'+d.name+'</a>':'<span style="font-weight:500">'+d.name+'</span>';
+    html+='<td><div class="name-cell">'+favImg+nameEl+aCnt(d)+'</div></td>';
     html+='<td>'+tBadge(d.tier)+'</td><td style="color:var(--text-2)">'+(d.type||'')+'</td>';
-    html+='<td>'+lCell(d.site)+'</td><td>'+lCell(d.li)+'</td>';
+    html+='<td>'+lCell(d.site)+'</td><td>'+lCell(d.linkedin||d.li)+'</td>';
     html+='<td style="text-align:right"><div style="display:flex;gap:4px;justify-content:flex-end"><button class="bs" onclick="openCo('+d.id+')">Edit</button><button class="bd" onclick="delCo('+d.id+')">Del</button></div></td></tr>';
-    html+='<tr class="apps-row'+(isOpen?' open':'')+'" id="arow-'+d.id+'">';
+    if(!isAgencyOrPlatform){    html+='<tr class="apps-row'+(isOpen?' open':'')+'" id="arow-'+d.id+'">';
     html+='<td class="apps-cell" colspan="7"><div class="apps-inner">';
     html+='<div class="apps-header"><span class="apps-label">Applications ('+apps.length+')</span><button class="bs bp" onclick="openApp('+d.id+',null)">+ Add application</button></div>';
     if(apps.length){
@@ -500,8 +715,10 @@ function renderCos(){
       html+='<div class="app-empty">No applications logged yet.</div>';
     }
     html+='</div></td></tr>';
+    }
   });
   tbody.innerHTML=html;
+  if(typeof adjustLayout==='function')requestAnimationFrame(adjustLayout);
 }
 
 function toggleRow(id){openRows.has(id)?openRows.delete(id):openRows.add(id);renderCos();}
@@ -513,7 +730,13 @@ function renderAppsView(){
   data.forEach(co=>(co.apps||[]).forEach(a=>all.push({...a,coId:co.id,coName:co.name,coTier:co.tier})));
   if(msState.apStatus.length)all=all.filter(a=>msState.apStatus.includes(a.status));
   if(msState.apCompany.length)all=all.filter(a=>msState.apCompany.includes(String(a.coId)));
-  if(q)all=all.filter(a=>(a.role||'').toLowerCase().includes(q)||(a.coName||'').toLowerCase().includes(q));
+  if(q)all=all.filter(a=>{
+    if((a.role||'').toLowerCase().includes(q))return true;
+    if((a.coName||'').toLowerCase().includes(q))return true;
+    if((a.url||'').toLowerCase().includes(q))return true;
+    if((a.notes||[]).some(n=>typeof n==='object'?(n.text||'').toLowerCase().includes(q):String(n).toLowerCase().includes(q)))return true;
+    return false;
+  });
   all.sort((a,b)=>{let va=a[apSortCol]||'',vb=b[apSortCol]||'';if(va<vb)return apSortAsc?-1:1;if(va>vb)return apSortAsc?1:-1;return 0;});
   const act=all.filter(a=>a.status!=='closed').length;
   document.getElementById('ap-stats').innerHTML='<div class="pill"><strong>'+all.length+'</strong> applications</div><div class="pill"><strong>'+act+'</strong> active</div>';
@@ -525,9 +748,27 @@ apThead.innerHTML='';apThead.appendChild(apTr);
   const tb=document.getElementById('ap-tbody');
   if(!all.length){tb.innerHTML='<tr><td colspan="7"><div class="empty"><div>&#128203;</div><p>No applications yet.</p></div></td></tr>';return;}
   tb.innerHTML=all.map(a=>'<tr><td>'+tBadge(a.coTier)+' <span style="font-size:11px;color:var(--text-2)">'+a.coName+'</span></td><td><button class="role-link" onclick="openApp('+a.coId+','+a.id+')" title="'+(a.role||'').replace(/"/g,'&quot;')+'">'+(a.role||'&#8212;')+'</button></td><td style="color:var(--text-2)">'+fmtDate(a.date)+'</td><td>'+sBadge(a.status)+'</td><td>'+(a.pdfBase64?'<button class="cv-dl" onclick="dlPdf('+a.id+','+a.coId+')">&#128196; '+(a.pdfName||'CV.pdf')+'</button>':'<span style="color:var(--text-3)">&#8212;</span>')+'</td><td>'+((Array.isArray(a.notes)?a.notes.length:a.notes)?'<button class="notes-btn has-notes" onclick="openNotes('+a.coId+','+a.id+')">View</button>':'<span style="color:var(--text-3)">&#8212;</span>')+'</td><td>'+(a.url?'<a class="link-a" href="'+a.url+'" target="_blank" rel="noopener">View &#8599;</a>':'&#8212;')+'</td></tr>').join('');
+  if(typeof adjustLayout==='function')requestAnimationFrame(adjustLayout);
 }
 
-function switchView(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('view-'+n).classList.add('active');document.querySelectorAll('.nav-btn').forEach((b,i)=>{if((n==='companies'&&i===0)||(n==='applications'&&i===1))b.classList.add('active');});if(n==='applications'){rebuildApCoFilter();renderAppsView();}}
+function switchView(n){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const viewEl=document.getElementById('view-'+n);
+  if(viewEl)viewEl.classList.add('active');
+  const navMap={companies:0,applications:1,howto:2,settings:3};
+  const btns=document.querySelectorAll('.nav-btn');
+  if(navMap[n]!==undefined&&btns[navMap[n]])btns[navMap[n]].classList.add('active');
+  // Contextual buttons
+  const btnCo=document.getElementById('btn-add-company');
+  const btnAp=document.getElementById('btn-add-application');
+  if(btnCo)btnCo.style.display=n==='companies'?'inline-block':'none';
+  if(btnAp)btnAp.style.display=n==='applications'?'inline-block':'none';
+  if(n==='applications'){rebuildApCoFilter();renderAppsView();}
+  if(n==='settings')renderSettingsView();
+  if(n==='howto')renderHowtoValidValues();
+  requestAnimationFrame(adjustLayout);
+}
 
 let rzState=null;
 function startRz(e,i){e.preventDefault();e.stopPropagation();rzState={i,x:e.clientX,w:colWidths[i]};e.target.classList.add('dragging');document.addEventListener('mousemove',doRz);document.addEventListener('mouseup',stopRz);}
@@ -544,20 +785,6 @@ function openNotes(coId,appId){
   document.getElementById('notes-modal').classList.add('open');
 }
 
-function renderNotesFeed(notes){
-  const feed=document.getElementById('notes-feed');if(!feed)return;
-  if(!notes||!notes.length){feed.innerHTML='<span style="color:var(--text-3);font-size:11px;font-style:italic">No notes yet.</span>';return;}
-  feed.innerHTML=notes.slice().reverse().map(n=>'<div class="note-item"><div class="note-ts">'+fmtTs(n.ts)+'</div><div class="note-text">'+n.text.replace(/</g,'&lt;')+'</div></div>').join('');
-}
-function addNote(){
-  const txt=document.getElementById('ano').value.trim();if(!txt)return;
-  if(!window._pendingNotes)window._pendingNotes=[];
-  window._pendingNotes.push({ts:Date.now(),text:txt});
-  document.getElementById('ano').value='';
-  renderNotesFeed([...(window._existingNotes||[]),...window._pendingNotes]);
-}
-
-function allNotes(){return[...(window._existingNotes||[]),...(window._pendingNotes||[])];}
 function renderNotesFeed(notes){
   const feed=document.getElementById('notes-feed');
   if(!feed)return;
@@ -618,7 +845,23 @@ function switchTab(t){
   document.getElementById('ap-save-btn').style.display=t==='manual'?'inline-block':'none';
   document.getElementById('ap-cancel-btn').style.display=t==='manual'?'inline-block':'none';
 }
-function jsonChanged(){const raw=document.getElementById('json-paste').value.trim();const err=document.getElementById('json-err'),ok=document.getElementById('json-ok');err.classList.remove('show');ok.classList.remove('show');if(!raw)return;try{const o=JSON.parse(raw);if(!o.role&&!o.position){err.textContent='Missing "role".';err.classList.add('show');return;}ok.classList.add('show');}catch(e){err.textContent='Invalid JSON.';err.classList.add('show');}}
+function jsonChanged(){
+  const raw=document.getElementById('json-paste').value.trim();
+  const err=document.getElementById('json-err'),ok=document.getElementById('json-ok');
+  err.classList.remove('show');ok.classList.remove('show');
+  if(!raw)return;
+  try{
+    const o=JSON.parse(raw);
+    const VS=['applied','inprocess','offer','closed'];
+    const isEditing=!!editAppId;
+    const errors=[];
+    if(!isEditing&&!o.role&&!o.position) errors.push('Missing <strong>role</strong> — required for new applications.');
+    if(o.status&&!VS.includes(o.status.toLowerCase().trim())) errors.push('<strong>status</strong>: "'+o.status+'" is not valid. Accepted: <code>'+VS.join('</code>, <code>')+'</code>');
+    if(o.date&&!/\d{4}-\d{2}-\d{2}/.test(o.date)) errors.push('<strong>date</strong>: "'+o.date+'" — expected format: <code>YYYY-MM-DD</code>');
+    if(errors.length){err.innerHTML='<div class="json-err-title">Please fix:</div>'+errors.map(e=>'<div class="json-err-item">'+e+'</div>').join('');err.classList.add('show');}
+    else ok.classList.add('show');
+  }catch(e){err.innerHTML='<div class="json-err-title">Invalid JSON syntax</div><div class="json-err-item">Check for missing quotes, commas, or brackets.</div>';err.classList.add('show');}
+}
 
 
 function pdfDragOver(e){e.preventDefault();document.getElementById('pdf-drop').classList.add('dragover');}
@@ -631,8 +874,28 @@ function clearPdf(){pendingPdfData=null;document.getElementById('pdf-drop').styl
 function fmtBytes(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';}
 function dlPdf(appId,coId){const co=data.find(x=>x.id==coId);const a=co&&co.apps.find(x=>x.id==appId);if(!a||!a.pdfBase64)return;const bytes=atob(a.pdfBase64);const arr=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);const blob=new Blob([arr],{type:'application/pdf'});const u=URL.createObjectURL(blob);const el=document.createElement('a');el.href=u;el.download=a.pdfName||'cv.pdf';el.click();URL.revokeObjectURL(u);}
 
-function openCo(id){editCoId=id;document.getElementById('co-title').textContent=id?'Edit company':'Add company';if(id){const d=data.find(x=>x.id===id);if(!d)return;document.getElementById('cn').value=d.name||'';document.getElementById('ct').value=d.tier||'2';document.getElementById('ctype').value=d.type||'Company';document.getElementById('cs').value=d.site||'';document.getElementById('cl').value=d.li||'';document.getElementById('cno').value=d.notes||'';}else{['cn','cs','cl','cno'].forEach(i=>document.getElementById(i).value='');document.getElementById('ct').value='2';document.getElementById('ctype').value='Company';}document.getElementById('co-modal').classList.add('open');setTimeout(()=>document.getElementById('cn').focus(),60);}
-async function saveCo(){const name=document.getElementById('cn').value.trim();if(!name){toast('Company name is required.');return;}const e={name,tier:document.getElementById('ct').value,type:document.getElementById('ctype').value,site:document.getElementById('cs').value.trim(),li:document.getElementById('cl').value.trim(),notes:document.getElementById('cno').value.trim()};if(editCoId){const i=data.findIndex(x=>x.id===editCoId);if(i!==-1)data[i]={...data[i],...e};toast('Saved.');}else{data.push({id:nextId(data),...e,apps:[]});toast('Company added.');}await persist();closeModal('co-modal');renderCos();}
+function openCo(id){
+  editCoId=id;
+  document.getElementById('co-title').textContent=id?'Edit company':'Add company';
+  if(id){
+    const d=data.find(x=>x.id===id);if(!d)return;
+    document.getElementById('cn').value=d.name||'';
+    document.getElementById('ct').value=d.tier||'2';
+    document.getElementById('ctype').value=d.type||'Company';
+    document.getElementById('cu').value=normalizeUrl(d.url||'');
+    document.getElementById('cs').value=normalizeUrl(d.site||'');
+    document.getElementById('cl').value=normalizeUrl(d.linkedin||d.li||'');
+    document.getElementById('cno').value=d.notes||'';
+  } else {
+    ['cn','cu','cs','cl','cno'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+    document.getElementById('ct').value='2';
+    document.getElementById('ctype').value='Company';
+  }
+  document.getElementById('co-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('cn').focus(),60);
+}
+function normalizeUrl(u){u=u.trim();if(!u)return u;if(!/^https?:\/\//i.test(u))u='https://'+u;return u;}
+async function saveCo(){const name=document.getElementById('cn').value.trim();if(!name){toast('Company name is required.');return;}let mainUrl=document.getElementById('cu').value.trim();if(!mainUrl){toast('Main website URL is required.');document.getElementById('cu').focus();return;}mainUrl=normalizeUrl(mainUrl);const rawSite=document.getElementById('cs').value.trim();const rawLi=document.getElementById('cl').value.trim();const e={name,tier:document.getElementById('ct').value,type:document.getElementById('ctype').value,url:mainUrl,site:rawSite?normalizeUrl(rawSite):'',linkedin:rawLi?normalizeUrl(rawLi):'',notes:document.getElementById('cno').value.trim()};if(editCoId){const i=data.findIndex(x=>x.id===editCoId);if(i!==-1)data[i]={...data[i],...e};toast('Saved.');}else{data.push({id:nextId(data),...e,apps:[]});toast('Company added.');}await persist();closeModal('co-modal');renderCos();}
 async function delCo(id){const d=data.find(x=>x.id===id);if(!d||!confirm('Delete "'+d.name+'" and all its applications?'))return;data=data.filter(x=>x.id!==id);openRows.delete(id);await persist();renderCos();toast('Deleted.');}
 
 function openApp(coId,appId){
@@ -664,14 +927,15 @@ function openApp(coId,appId){
       clBody.innerHTML=a.changelog.slice().reverse().map(e=>'<div class="cl-item"><span class="cl-ts">'+fmtTs(e.ts)+'</span><span class="cl-desc">'+(Array.isArray(e.changes)?e.changes.join('; '):e.changes)+'</span></div>').join('');
     } else clSection.style.display='none';
   } else {
-    ['ar','au','ano'].forEach(i=>document.getElementById(i).value='');
+    ['ar','au','ano'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
     document.getElementById('ad').value=new Date().toISOString().slice(0,10);
     document.getElementById('as').value='applied';
-    document.getElementById('ano').value='';
     window._existingNotes=[];window._pendingNotes=[];
     renderNotesFeed([]);
+    clearPdf();
     clSection.style.display='none';
   }
+  rebuildStatusSelect();
   document.getElementById('ap-modal').classList.add('open');
   // Take snapshot of initial state for unsaved-changes detection
   window._apModalSnapshot={
@@ -687,7 +951,9 @@ function openApp(coId,appId){
 
 async function saveApp(){
   const role=document.getElementById('ar').value.trim();if(!role){toast('Role is required.');return;}
-  const co=data.find(x=>x.id===editAppCoId);if(!co)return;if(!co.apps)co.apps=[];
+  const co=data.find(x=>x.id===editAppCoId);if(!co)return;
+  if(co.type==='Agency'||co.type==='Platform'){toast('Applications cannot be added to agencies or platforms.');return;}
+  if(!co.apps)co.apps=[];
   const getPdf=(ex)=>({pdfBase64:pendingPdfData?pendingPdfData.base64:(ex?ex.pdfBase64:null),pdfName:pendingPdfData?pendingPdfData.name:(ex?ex.pdfName:null),pdfSize:pendingPdfData?pendingPdfData.size:(ex?ex.pdfSize:null)});
   const pendingTxt=document.getElementById('ano').value.trim();
   if(pendingTxt){if(!window._pendingNotes)window._pendingNotes=[];window._pendingNotes.push({ts:Date.now(),text:pendingTxt});}
@@ -783,7 +1049,227 @@ function bgClose(e,id){if(e.target===document.getElementById(id))closeModal(id);
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeApModal();['co-modal','notes-modal'].forEach(closeModal);}});
 
-openDB().then(async()=>{await loadData();initFilters();renderCos();updateExportInfo();}).catch(()=>{data=DEFAULT.map(d=>({...d,apps:[]}));initFilters();renderCos();updateExportInfo();toast('IndexedDB unavailable.');});
+
+/* ══════════════════════════════════════
+   Settings
+══════════════════════════════════════ */
+let customTiers=[];
+let customStatuses=[];
+
+async function loadSettings(){
+  try{
+    const t=await dbGet(ST_M,'customTiers');if(t)customTiers=t;
+    const s=await dbGet(ST_M,'customStatuses');if(s)customStatuses=s;
+  }catch(e){}
+}
+async function saveSettings(){
+  try{await dbSet(ST_M,'customTiers',customTiers);await dbSet(ST_M,'customStatuses',customStatuses);}catch(e){}
+}
+
+function slugify(str){return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');}
+function autoSuggestValue(inp){document.getElementById('new-status-value').value=slugify(inp.value);}
+function autoSuggestTierValue(inp){document.getElementById('new-tier-value').value=slugify(inp.value);}
+
+function renderSettingsTiers(){
+  const el=document.getElementById('settings-tiers');if(!el)return;
+  const FIXED=[{v:'1',l:'1 — Priority'},{v:'2',l:'2 — Active watch'},{v:'3',l:'3 — On radar'},{v:'Agency',l:'Agency'},{v:'Platform',l:'Platform'}];
+  const fixedHtml=FIXED.map(t=>'<div style="display:flex;align-items:center;gap:8px;background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius);padding:5px 10px;font-size:12px"><span style="flex:1"><strong>'+t.l+'</strong> <code style="font-size:10px;color:var(--text-3)">'+t.v+'</code></span><span style="font-size:10px;color:var(--text-3);padding:1px 6px;background:var(--gray-bg);border-radius:3px">fixed</span></div>').join('');
+  const customHtml=customTiers.map((t,i)=>{const label=t.label||t;const value=t.value||t;return '<div style="display:flex;align-items:center;gap:8px;background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius);padding:5px 10px;font-size:12px"><span style="flex:1"><strong>'+label+'</strong> <code style="font-size:10px;color:var(--text-3)">'+value+'</code></span><button class="bd" style="border:.5px solid var(--danger);font-size:11px" onclick="removeCustomTier('+i+')">Remove</button></div>';}).join('');
+  el.innerHTML=fixedHtml+(customTiers.length?customHtml:'<p style="font-size:12px;color:var(--text-3);font-style:italic;margin-top:.4rem">No custom tiers yet.</p>');
+}
+
+async function addCustomTier(){
+  const label=document.getElementById('new-tier-input').value.trim();
+  const value=document.getElementById('new-tier-value').value.trim()||slugify(label);
+  if(!label)return;
+  if(customTiers.some(t=>t.value===value)){toast('Value already exists.');return;}
+  customTiers.push({label,value});
+  document.getElementById('new-tier-input').value='';
+  document.getElementById('new-tier-value').value='';
+  await saveSettings();
+  renderSettingsTiers();
+  rebuildTierSelect();
+  initFilters();renderHowtoValidValues();
+  toast('Tier added.');
+}
+
+async function removeCustomTier(i){
+  customTiers.splice(i,1);
+  await saveSettings();
+  renderSettingsTiers();
+  rebuildTierSelect();
+  initFilters();renderHowtoValidValues();
+  toast('Tier removed.');
+}
+
+function rebuildTierSelect(){
+  const sel=document.getElementById('ct');if(!sel)return;
+  const core=[{v:'1',l:'1 — Priority'},{v:'2',l:'2 — Active watch'},{v:'3',l:'3 — On radar'},{v:'Agency',l:'Agency'},{v:'Platform',l:'Platform'}];
+  const all=[...core,...customTiers.map(t=>({v:t.value||t,l:t.label||t}))];
+  const cur=sel.value;
+  sel.innerHTML=all.map(o=>'<option value="'+o.v+'"'+(o.v===cur?' selected':'')+'>'+o.l+'</option>').join('');
+}
+
+function renderSettingsStatuses(){
+  const el=document.getElementById('settings-statuses');if(!el)return;
+  const FIXED=[{label:'Applied',value:'applied'},{label:'In Process',value:'inprocess'},{label:'Offer',value:'offer'},{label:'Closed',value:'closed'}];
+  const fixedHtml=FIXED.map(s=>'<div style="display:flex;align-items:center;gap:8px;background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius);padding:5px 10px;font-size:12px"><span style="flex:1"><strong>'+s.label+'</strong> <code style="font-size:10px;color:var(--text-3)">'+s.value+'</code></span><span style="font-size:10px;color:var(--text-3);padding:1px 6px;background:var(--gray-bg);border-radius:3px">fixed</span></div>').join('');
+  const customHtml=customStatuses.map((s,i)=>'<div style="display:flex;align-items:center;gap:8px;background:var(--surface-1);border:.5px solid var(--border);border-radius:var(--radius);padding:5px 10px;font-size:12px"><span style="flex:1"><strong>'+s.label+'</strong> <code style="font-size:10px;color:var(--text-3)">'+s.value+'</code></span><button class="bd" style="border:.5px solid var(--danger);font-size:11px" onclick="removeCustomStatus('+i+')">Remove</button></div>').join('');
+  el.innerHTML=fixedHtml+(customStatuses.length?customHtml:'<p style="font-size:12px;color:var(--text-3);font-style:italic;margin-top:.4rem">No custom statuses yet.</p>');
+}
+
+async function addCustomStatus(){
+  const label=document.getElementById('new-status-label').value.trim();
+  const value=document.getElementById('new-status-value').value.trim().toLowerCase().replace(/\s+/g,'');
+  if(!label||!value){toast('Both label and value are required.');return;}
+  if(customStatuses.some(s=>s.value===value)){toast('Value already exists.');return;}
+  customStatuses.push({label,value});
+  document.getElementById('new-status-label').value='';
+  document.getElementById('new-status-value').value='';
+  await saveSettings();
+  renderSettingsStatuses();
+  rebuildStatusSelect();
+  initFilters();renderHowtoValidValues();
+  toast('Status added.');
+}
+
+async function removeCustomStatus(i){
+  customStatuses.splice(i,1);
+  await saveSettings();
+  renderSettingsStatuses();
+  rebuildStatusSelect();
+  initFilters();renderHowtoValidValues();
+  toast('Status removed.');
+}
+
+async function clearAllData(){
+  if(!confirm('This will permanently delete ALL companies, applications, custom tiers and custom statuses. Export a backup first. Continue?'))return;
+  data=[];customTiers=[];customStatuses=[];
+  await persist();await saveSettings();
+  initFilters();renderCos();renderAppsView();
+  renderSettingsView();
+  toast('All data cleared.');
+}
+
+function renderSettingsView(){
+  renderSettingsTiers();
+  renderSettingsStatuses();
+}
+
+function rebuildStatusSelect(){
+  const sel=document.getElementById('as');if(!sel)return;
+  const core=[{v:'applied',l:'Applied'},{v:'inprocess',l:'In Process'},{v:'offer',l:'Offer'},{v:'closed',l:'Closed'}];
+  const all=[...core,...(customStatuses||[]).map(s=>({v:s.value,l:s.label}))];
+  const cur=sel.value||'applied';
+  sel.innerHTML=all.map(o=>`<option value="${o.v}"${o.v===cur?' selected':''}>${o.l}</option>`).join('');
+}
+
+function openAppGlobal(){
+  // Build company list for selector
+  const companies=data.filter(d=>d.type==='Company'||!d.type).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!companies.length){toast('Add a company first.');return;}
+  // Show a simple select modal
+  const existing=document.getElementById('global-app-select-modal');
+  if(existing)existing.remove();
+  const modal=document.createElement('div');
+  modal.id='global-app-select-modal';
+  modal.className='backdrop open';
+  modal.innerHTML='<div class="modal" style="max-width:380px"><div class="mhead"><h2>Select company</h2><button class="cbtn" onclick="document.getElementById(\'global-app-select-modal\').remove()">&#215;</button></div><div class="mbody"><div class="ff"><label>Company</label><select id="global-co-select">'+companies.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('')+'</select></div></div><div class="mfoot"><button onclick="document.getElementById(\'global-app-select-modal\').remove()">Cancel</button><button class="bp" onclick="const id=parseInt(document.getElementById(\'global-co-select\').value);document.getElementById(\'global-app-select-modal\').remove();openApp(id,null);">Continue</button></div></div>';
+  document.body.appendChild(modal);
+}
+
+function renderHowtoValidValues(){
+  const cs='background:var(--gray-bg);border-radius:3px;padding:1px 4px;font-size:11px';
+  const fixedTiers=[{v:'1'},{v:'2'},{v:'3'},{v:'Agency'},{v:'Platform'}];
+  const customT=(customTiers||[]);
+  const allTiers=[...fixedTiers,...customT.map(t=>({v:t.value||t}))];
+
+  const tierEl=document.getElementById('howto-tier-valid');
+  if(tierEl) tierEl.innerHTML='Valid <strong>tier</strong>: '+allTiers.map(t=>'<code style="'+cs+'">'+t.v+'</code>').join(' ')+' &mdash; Valid <strong>type</strong>: <code style="'+cs+'">Company</code> <code style="'+cs+'">Agency</code> <code style="'+cs+'">Platform</code>';
+
+  const fixedSt=[{v:'applied'},{v:'inprocess'},{v:'offer'},{v:'closed'}];
+  const allSt=[...fixedSt,...(customStatuses||[]).map(s=>({v:s.value||s.v}))];
+  const statusEl=document.getElementById('howto-status-valid');
+  if(statusEl) statusEl.innerHTML='Valid <strong>status</strong>: '+allSt.map(s=>'<code style="'+cs+'">'+s.v+'</code>').join(' ')+' &mdash; Date format: <code style="'+cs+'">YYYY-MM-DD</code> &mdash; <strong>role</strong> required only for new applications.';
+
+  // Dynamic prompts
+  const tierVals=allTiers.map(t=>'"'+t.v+'"').join(', ');
+  const stVals=allSt.map(s=>'"'+s.v+'"').join(', ');
+
+  const promptCo=document.getElementById('howto-prompt-companies');
+  if(promptCo) promptCo.textContent=`You are a company research assistant. Search for [industry, e.g. fintech, SaaS, HR tech] companies based in [city, e.g. London, New York, Shanghai] or hiring remotely in [region, e.g. EMEA, APAC, Americas] that are relevant for a [profile, e.g. commercial roles: BDR, SDR, AE, AM, CSM, Partnerships].
+
+Classify each company into one of three tiers:
+- Tier "1" — confirmed office in [your city] AND actively hiring for [your profile]
+- Tier "2" — relevant company but office presence uncertain OR hiring less frequent
+- Tier "3" — on the radar, worth monitoring but no confirmed hiring activity
+
+Return a JSON array in this exact format — do not include the id or apps fields:
+[
+  {
+    "name": "Company name",
+    "tier": "1",
+    "type": "Company",
+    "url": "https://company.com",
+    "site": "https://company.com/careers",
+    "linkedin": "https://linkedin.com/company/slug/jobs/",
+    "notes": "Brief context and why it is relevant."
+  }
+]
+
+Valid tier values: ${tierVals}
+Valid type values: "Company", "Agency", "Platform".`;
+
+  const promptAg=document.getElementById('howto-prompt-agencies');
+  if(promptAg) promptAg.textContent=`You are a recruitment research assistant. Find recruitment agencies and job platforms specialised in [industry, e.g. fintech, SaaS, tech] roles in [region, e.g. Europe, EMEA] that are relevant for a [profile, e.g. commercial profile: BDR, SDR, AE, AM, CSM].
+
+Include:
+- Boutique recruitment agencies specialised in the industry
+- Job boards and platforms with strong coverage of the region and profile
+- Headhunters known for placing candidates in [your target companies or sector]
+
+Return a JSON array in this format:
+[
+  {
+    "name": "Agency or platform name",
+    "tier": "Agency",
+    "type": "Agency",
+    "url": "https://agency.com",
+    "site": "https://agency.com/jobs",
+    "linkedin": "https://linkedin.com/company/slug/jobs/",
+    "notes": "Specialisation and why it is relevant."
+  }
+]
+
+Valid type values: "Agency", "Platform".`;
+}
+
+function adjustLayout(){
+  // Constrain table height so only the table scrolls.
+  ['#view-companies .table-wrap','#view-applications .table-wrap'].forEach(sel=>{
+    const wrap=document.querySelector(sel);
+    if(!wrap)return;
+    wrap.style.maxHeight='none';
+    void wrap.offsetHeight;
+    const naturalH=wrap.scrollHeight;
+    const rect=wrap.getBoundingClientRect();
+    const available=window.innerHeight-rect.top-16;
+    wrap.style.maxHeight=(naturalH>available?Math.max(200,available):naturalH)+'px';
+  });
+}
+window.addEventListener('resize',adjustLayout);
+
+openDB().then(async()=>{
+  await loadData();await loadSettings();
+  initFilters();renderCos();updateExportInfo();
+  switchView('companies');
+}).catch(()=>{
+  data=DEFAULT.map(d=>({...d,apps:[]}));
+  initFilters();renderCos();updateExportInfo();
+  switchView('companies');
+  toast('IndexedDB unavailable.');
+});
 </script>
+</div><!-- /scroll-root -->
 </body>
 </html>
