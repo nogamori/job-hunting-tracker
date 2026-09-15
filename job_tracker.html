@@ -494,7 +494,7 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
     <div class="tab-panel" id="tab-json">
       <textarea class="json-paste" id="json-paste" placeholder="Paste the JSON from the conversation here&hellip;" oninput="jsonChanged()"></textarea>
       <div class="json-err" id="json-err"></div>
-      <div class="json-ok" id="json-ok">&#10003; JSON valid &mdash; click &ldquo;Fill from JSON&rdquo; to populate the fields.</div>
+      <div class="json-ok" id="json-ok">&#10003; JSON valid &mdash; click &ldquo;Import &amp; Save&rdquo; to apply.</div>
       <div class="json-hint">Expected format:<br>
         <code>{ "role": "SDR &ndash; PT Market", "url": "https://&hellip;", "date": "2026-09-01", "status": "applied", "notes": "&hellip;" }</code><br><br>
         Valid status values: <code>applied</code>, <code>inprocess</code>, <code>offer</code>, <code>closed</code><br>
@@ -524,13 +524,28 @@ tr.company-row:hover td{background:color-mix(in srgb,var(--accent) 3%,transparen
 const DB_NAME='ga_jt',DB_VER=1,ST='tracker',ST_M='meta';
 let db=null;
 async function importAndSave(){
-  const o=parseAndValidateJson();if(!o)return;
+  // Parse JSON directly — parseAndValidateJson lives in a different script block
+  let o;
+  try{ o=JSON.parse(document.getElementById('json-paste').value.trim()); }
+  catch(e){ toast('Invalid JSON.'); return; }
+  if(!o||typeof o!=='object'){ toast('Invalid JSON.'); return; }
   const VS=['applied','inprocess','offer','closed',...(customStatuses||[]).map(s=>s.value)];
+  // When editing, pre-fill form from existing record so saveApp never sees empty role
+  if(editAppId){
+    const co=data.find(x=>x.id===editAppCoId);
+    const a=co&&co.apps.find(x=>x.id===editAppId);
+    if(a){
+      document.getElementById('ar').value=a.role||'';
+      document.getElementById('au').value=a.url||'';
+      document.getElementById('ad').value=a.date||'';
+      document.getElementById('as').value=a.status||'applied';
+    }
+  }
   if(o.role||o.position) document.getElementById('ar').value=o.role||o.position;
   if(o.url) document.getElementById('au').value=normalizeUrl(o.url);
   if(o.date) document.getElementById('ad').value=o.date;
   if(o.status){const st=o.status.toLowerCase().trim();if(VS.includes(st))document.getElementById('as').value=st;}
-  if(o.notes&&o.notes.trim()){
+  if(o.notes&&typeof o.notes==='string'&&o.notes.trim()){
     if(!window._pendingNotes)window._pendingNotes=[];
     window._pendingNotes.push({ts:o.ts||Date.now(),text:o.notes.trim()});
   }
@@ -809,6 +824,7 @@ function renderNotesFeed(notes){
       +'</div>';
   }).join('');
 }
+function allNotes(){return [...(window._existingNotes||[]),...(window._pendingNotes||[])];}
 function editNoteStart(i){window._editingNoteIdx=i;renderNotesFeed(allNotes());}
 function editNoteCancel(){window._editingNoteIdx=undefined;renderNotesFeed(allNotes());}
 function editNoteSave(i){
